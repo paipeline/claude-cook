@@ -32,7 +32,7 @@ main ═════════════════════════
 
 ### `main`
 
-Production. Always installable via `npx get-shit-done-cc`.
+Production. Always installable via `npx claude-cook`.
 
 | Rule | Why |
 |------|-----|
@@ -142,7 +142,7 @@ git tag -a v1.10.0-beta.1 -m "Beta: codebase intelligence stabilized"
 git tag -a v1.10.0 -m "Release: codebase intelligence"
 ```
 
-Users opt-in: `npm install get-shit-done-cc@1.10.0-alpha.1`
+Users opt-in: `npm install claude-cook@1.10.0-alpha.1`
 
 **If it doesn't work out:** Delete pre-release tags, no messy public revert on main.
 
@@ -310,7 +310,7 @@ npm install
 
 # Test locally
 npm link
-npx get-shit-done-cc
+npx claude-cook
 
 # Run tests
 npm test

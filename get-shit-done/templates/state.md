@@ -66,6 +66,26 @@ None yet.
 
 None yet.
 
+## Vibe Kanban Status
+
+**Project:** [project_name] ([project_id])
+**Default executor:** [CLAUDE_CODE]
+**PM mode:** [autonomous / manual / disabled]
+
+### Active Phase Tickets
+
+| Phase | Wave | Tickets | Done | In Progress | Todo | Failed |
+|-------|------|---------|------|-------------|------|--------|
+| — | — | — | — | — | — | — |
+
+**Last polled:** [YYYY-MM-DD HH:MM]
+**PM loop:** [running / stopped]
+**Next action:** [description]
+
+### Recent Ticket Events
+
+- [None yet]
+
 ## Session Continuity
 
 Last session: [YYYY-MM-DD HH:MM]
@@ -154,6 +174,15 @@ Updated after each plan completion.
 - Issues that affect future work
 - Prefix with originating phase
 - Cleared when addressed
+
+### Vibe Kanban Status
+When PM mode is enabled, tracks ticket state:
+- Project reference and executor config
+- Per-phase ticket summary table (wave × status)
+- Last poll timestamp and PM loop status
+- Recent ticket events (last 5 state changes)
+
+This section is only present when `pm` is configured in config.json.
 
 ### Session Continuity
 Enables instant resumption:

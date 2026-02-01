@@ -149,7 +149,7 @@ console.log(banner);
 
 // Show help if requested
 if (hasHelp) {
-  console.log(`  ${yellow}Usage:${reset} npx get-shit-done-cc [options]\n\n  ${yellow}Options:${reset}\n    ${cyan}-g, --global${reset}              Install globally (to config directory)\n    ${cyan}-l, --local${reset}               Install locally (to current directory)\n    ${cyan}--claude${reset}                  Install for Claude Code only\n    ${cyan}--opencode${reset}                Install for OpenCode only\n    ${cyan}--gemini${reset}                  Install for Gemini only\n    ${cyan}--all${reset}                     Install for all runtimes\n    ${cyan}-u, --uninstall${reset}           Uninstall GSD (remove all GSD files)\n    ${cyan}-c, --config-dir <path>${reset}   Specify custom config directory\n    ${cyan}-h, --help${reset}                Show this help message\n    ${cyan}--force-statusline${reset}        Replace existing statusline config\n\n  ${yellow}Examples:${reset}\n    ${dim}# Interactive install (prompts for runtime and location)${reset}\n    npx get-shit-done-cc\n\n    ${dim}# Install for Claude Code globally${reset}\n    npx get-shit-done-cc --claude --global\n\n    ${dim}# Install for Gemini globally${reset}\n    npx get-shit-done-cc --gemini --global\n\n    ${dim}# Install for all runtimes globally${reset}\n    npx get-shit-done-cc --all --global\n\n    ${dim}# Install to custom config directory${reset}\n    npx get-shit-done-cc --claude --global --config-dir ~/.claude-bc\n\n    ${dim}# Install to current project only${reset}\n    npx get-shit-done-cc --claude --local\n\n    ${dim}# Uninstall GSD from Claude Code globally${reset}\n    npx get-shit-done-cc --claude --global --uninstall\n\n  ${yellow}Notes:${reset}\n    The --config-dir option is useful when you have multiple configurations.\n    It takes priority over CLAUDE_CONFIG_DIR / GEMINI_CONFIG_DIR environment variables.\n`);
+  console.log(`  ${yellow}Usage:${reset} npx claude-cook [options]\n\n  ${yellow}Options:${reset}\n    ${cyan}-g, --global${reset}              Install globally (to config directory)\n    ${cyan}-l, --local${reset}               Install locally (to current directory)\n    ${cyan}--claude${reset}                  Install for Claude Code only\n    ${cyan}--opencode${reset}                Install for OpenCode only\n    ${cyan}--gemini${reset}                  Install for Gemini only\n    ${cyan}--all${reset}                     Install for all runtimes\n    ${cyan}-u, --uninstall${reset}           Uninstall GSD (remove all GSD files)\n    ${cyan}-c, --config-dir <path>${reset}   Specify custom config directory\n    ${cyan}-h, --help${reset}                Show this help message\n    ${cyan}--force-statusline${reset}        Replace existing statusline config\n\n  ${yellow}Examples:${reset}\n    ${dim}# Interactive install (prompts for runtime and location)${reset}\n    npx claude-cook\n\n    ${dim}# Install for Claude Code globally${reset}\n    npx claude-cook --claude --global\n\n    ${dim}# Install for Gemini globally${reset}\n    npx claude-cook --gemini --global\n\n    ${dim}# Install for all runtimes globally${reset}\n    npx claude-cook --all --global\n\n    ${dim}# Install to custom config directory${reset}\n    npx claude-cook --claude --global --config-dir ~/.claude-bc\n\n    ${dim}# Install to current project only${reset}\n    npx claude-cook --claude --local\n\n    ${dim}# Uninstall GSD from Claude Code globally${reset}\n    npx claude-cook --claude --global --uninstall\n\n  ${yellow}Notes:${reset}\n    The --config-dir option is useful when you have multiple configurations.\n    It takes priority over CLAUDE_CONFIG_DIR / GEMINI_CONFIG_DIR environment variables.\n`);
   process.exit(0);
 }
 
@@ -783,7 +783,15 @@ function uninstall(isGlobal, runtime = 'claude') {
     }
   }
 
-  // 5. Clean up settings.json (remove GSD hooks and statusline)
+  // 5. Remove GSD scripts
+  const scriptsDir = path.join(targetDir, 'scripts');
+  if (fs.existsSync(scriptsDir)) {
+    fs.rmSync(scriptsDir, { recursive: true });
+    removedCount++;
+    console.log(`  ${green}✓${reset} Removed scripts/`);
+  }
+
+  // 6. Clean up settings.json (remove GSD hooks and statusline)
   const settingsPath = path.join(targetDir, 'settings.json');
   if (fs.existsSync(settingsPath)) {
     let settings = readSettings(settingsPath);
@@ -1135,6 +1143,30 @@ function install(isGlobal, runtime = 'claude') {
       console.log(`  ${green}✓${reset} Installed hooks (bundled)`);
     } else {
       failures.push('hooks');
+    }
+  }
+
+  // Copy scripts (pm-loop.sh etc.)
+  const scriptsSrc = path.join(src, 'scripts');
+  if (fs.existsSync(scriptsSrc)) {
+    const scriptsDest = path.join(targetDir, 'scripts');
+    fs.mkdirSync(scriptsDest, { recursive: true });
+    const scriptEntries = fs.readdirSync(scriptsSrc);
+    for (const entry of scriptEntries) {
+      const srcFile = path.join(scriptsSrc, entry);
+      if (fs.statSync(srcFile).isFile()) {
+        const destFile = path.join(scriptsDest, entry);
+        fs.copyFileSync(srcFile, destFile);
+        // Make .sh files executable
+        if (entry.endsWith('.sh')) {
+          fs.chmodSync(destFile, 0o755);
+        }
+      }
+    }
+    if (verifyInstalled(scriptsDest, 'scripts')) {
+      console.log(`  ${green}✓${reset} Installed scripts`);
+    } else {
+      failures.push('scripts');
     }
   }
 

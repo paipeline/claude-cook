@@ -23,6 +23,18 @@ Use for major workflow transitions.
 - `PHASE {N} COMPLETE ✓`
 - `MILESTONE COMPLETE 🎉`
 
+**PM mode stages (use `PM ►` prefix instead of `GSD ►`):**
+- `PM ► CONNECTED TO VIBE KANBAN`
+- `PM ► TICKETS SYNCED`
+- `PM ► DISPATCHING WAVE {N}`
+- `PM ► AUTONOMOUS MODE ACTIVE`
+- `PM ► MANUAL MODE — WORKERS RUNNING`
+- `PM ► CHECK CYCLE`
+- `PM ► REPLANNED`
+- `PM ► PHASE COMPLETE`
+- `PM ► PROJECT STATUS`
+- `PM ► STOPPING`
+
 ---
 
 ## Checkpoint Boxes

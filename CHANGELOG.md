@@ -330,7 +330,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.17] - 2026-01-15
 
 ### Added
-- New `/gsd:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx get-shit-done-cc`)
+- New `/gsd:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx claude-cook`)
 
 ## [1.5.16] - 2026-01-15
 

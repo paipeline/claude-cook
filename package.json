@@ -1,9 +1,9 @@
 {
-  "name": "get-shit-done-cc",
+  "name": "claude-cook",
   "version": "1.10.1",
   "description": "A meta-prompting, context engineering and spec-driven development system for Claude Code, OpenCode and Gemini by TÂCHES.",
   "bin": {
-    "get-shit-done-cc": "bin/install.js"
+    "claude-cook": "bin/install.js"
   },
   "files": [
     "bin",

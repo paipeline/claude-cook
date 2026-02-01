@@ -53,6 +53,16 @@ If missing both ROADMAP.md and PROJECT.md: suggest `/gsd:new-project`.
 - Read `.planning/ROADMAP.md` for phase structure and objectives
 - Read `.planning/PROJECT.md` for current state (What This Is, Core Value, Requirements)
 - Read `.planning/config.json` for settings (model_profile, workflow toggles)
+
+**Check for PM mode:**
+
+Read `pm` section from config.json. If `pm.project_id` is set (not null), PM mode is active.
+
+If PM mode is active:
+- Check if pm-loop.sh is running: `test -f .planning/.pm-loop-pid && ps -p $(cat .planning/.pm-loop-pid) > /dev/null 2>&1`
+- Read TICKET-MAP.md for active phase if it exists
+- Include PM status in the report (see PM section below)
+- Route to PM commands instead of standard execute commands
   </step>
 
 <step name="recent">
@@ -110,6 +120,47 @@ CONTEXT: [✓ if CONTEXT.md exists | - if not]
 [Next phase/plan objective from ROADMAP]
 ```
 
+</step>
+
+<step name="pm_route">
+**If PM mode is active (pm.project_id set in config):**
+
+Skip the standard route step. Instead, present PM-specific routing:
+
+1. Read TICKET-MAP.md for the current phase
+2. If no TICKET-MAP exists: suggest `/gsd:pm-start {phase}`
+3. If TICKET-MAP exists, check ticket statuses:
+
+| Condition | Action |
+|-----------|--------|
+| All tickets done | "Phase complete. `/gsd:pm-start {next}` for next phase." |
+| Some tickets running | "Workers active. `/gsd:pm-check` to poll status." |
+| Some tickets todo, wave ready | "Ready to dispatch. `/gsd:pm-check` to auto-dispatch." |
+| Failed tickets | "Failures detected. `/gsd:pm-replan {phase}` to fix." |
+| No tickets yet | "Phase not started. `/gsd:pm-start {phase}`" |
+
+4. If pm-loop.sh is running, note: "Autonomous monitoring active (PID: X)"
+5. Show last 3 PM-LOG entries if available
+6. Present available PM commands
+
+```
+## PM Status
+
+Mode: {autonomous|manual}
+Loop: {running|stopped}
+
+| Wave | Done | Running | Todo | Failed |
+| ---- | ---- | ------- | ---- | ------ |
+| ...  | ...  | ...     | ...  | ...    |
+
+## Actions
+/gsd:pm-check    — Poll ticket status
+/gsd:pm-status   — Full dashboard
+/gsd:pm-replan   — Modify plans
+/gsd:pm-stop     — Stop autonomous loop
+```
+
+**Exit after PM route.** Do not continue to standard routing below.
 </step>
 
 <step name="route">

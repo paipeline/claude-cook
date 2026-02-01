@@ -30,7 +30,7 @@ Output ONLY the reference content below. Do NOT add:
 GSD evolves fast. Update periodically:
 
 ```bash
-npx get-shit-done-cc@latest
+npx claude-cook@latest
 ```
 
 ## Core Workflow
@@ -334,7 +334,7 @@ Update GSD to latest version with changelog preview.
 - Displays changelog entries for versions you've missed
 - Highlights breaking changes
 - Confirms before running install
-- Better than raw `npx get-shit-done-cc`
+- Better than raw `npx claude-cook`
 
 Usage: `/gsd:update`
 
@@ -421,6 +421,58 @@ Example config:
 }
 ```
 
+### Product Manager Mode
+
+**`/gsd:pm-start <phase>`**
+Plan a phase, sync to Vibe Kanban tickets, dispatch external coding agents.
+
+- Plans phase (reuses gsd-planner + checker pipeline)
+- Syncs plans to Vibe Kanban as tickets (one ticket per PLAN.md)
+- Dispatches wave 1 workers via `start_workspace_session`
+- `--autonomous`: launches `pm-loop.sh` for continuous monitoring
+- `--manual`: shows status and available commands (default)
+- `--executor=X`: override default executor (CLAUDE_CODE, CURSOR_AGENT, etc.)
+
+Usage: `/gsd:pm-start 1 --autonomous`
+
+**`/gsd:pm-check [phase]`**
+Single monitoring cycle — poll tickets, detect changes, react.
+
+- Polls Vibe Kanban for ticket status changes
+- Diffs against TICKET-MAP.md to detect events
+- Auto-reacts: advance waves, replan on failure, alert on stuck
+- Stateless — called by pm-loop.sh or manually
+
+Usage: `/gsd:pm-check`
+
+**`/gsd:pm-replan <phase> [feedback]`**
+Replan based on feedback or failures.
+
+- Classifies scope: targeted fix, revision, or full replan
+- Spawns planner with feedback context
+- Cancels old tickets, creates new ones, dispatches
+
+Usage: `/gsd:pm-replan 3 "switch to Redis for caching"`
+
+**`/gsd:pm-status [phase]`**
+Dashboard showing tickets, plan health, recent PM decisions.
+
+- Live ticket status from Vibe Kanban
+- Wave progress and completion
+- Recent PM-LOG entries
+- Suggested next actions
+
+Usage: `/gsd:pm-status`
+
+**`/gsd:pm-stop`**
+Stop the autonomous PM monitoring loop.
+
+- Creates stop signal file (`.planning/.pm-stop`)
+- Loop exits gracefully on next cycle
+- Workers already dispatched continue running
+
+Usage: `/gsd:pm-stop`
+
 ## Common Workflows
 
 **Starting a new project:**
@@ -462,6 +514,17 @@ Example config:
 /gsd:add-todo Fix modal z-index  # Capture with explicit description
 /gsd:check-todos                 # Review and work on todos
 /gsd:check-todos api             # Filter by area
+```
+
+**Using PM mode (external agents):**
+
+```
+/gsd:new-project                          # Initialize project
+/gsd:pm-start 1 --autonomous             # Plan + sync + dispatch + auto-monitor
+# pm-loop.sh runs in background, polling every 60s
+/gsd:pm-status                            # Check dashboard anytime
+/gsd:pm-replan 1 "use Redis instead"      # Change plans mid-flight
+/gsd:pm-stop                              # Stop autonomous loop
 ```
 
 **Debugging an issue:**
