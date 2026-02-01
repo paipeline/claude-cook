@@ -309,7 +309,9 @@ while true; do
   echo ""
 
   # Build the prompt
-  if [ -n "$PHASE" ]; then
+  # Only pass phase hint on cycle 1 — after that, pm-cycle auto-detects
+  # from STATE.md so it can advance through phases autonomously.
+  if [ "$CYCLE" -eq 1 ] && [ -n "$PHASE" ]; then
     PROMPT="/gsd:pm-cycle $PHASE"
   else
     PROMPT="/gsd:pm-cycle"
