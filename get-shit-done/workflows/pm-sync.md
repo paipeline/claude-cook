@@ -58,19 +58,62 @@ Build three lists:
 
 ## 3. Create Tickets for New Plans
 
+**Ticket philosophy:** Tickets are Agile-style task assignments — atomic, isolated, and code-agnostic. They describe **what** to deliver and **why**, not **how** to implement it. The worker agent reads the codebase to figure out implementation. This makes tickets robust to codebase changes and readable by any stakeholder.
+
 For each new plan:
 
-1. Read the full PLAN.md content
+1. Read the PLAN.md content
 2. Extract from frontmatter: `wave`, `depends_on`, `phase`, `plan`
-3. Extract objective from the `<objective>` section (first line)
-4. Build ticket:
-   - **title:** `"Phase {phase} Plan {plan}: {objective_first_line}"`
-   - **description:** Full PLAN.md content as-is (this is the worker's prompt)
-5. Call `mcp__vibe_kanban__create_task(project_id, title, description)`
-6. Record in TICKET-MAP.md:
+3. Extract from `<objective>` section: what this plan accomplishes and why
+4. Extract from `must_haves` frontmatter: truths (observable behaviors), artifacts (deliverables)
+5. Build an **Agile ticket** (NOT a code dump):
+
+   - **title:** `"Phase {phase} Plan {plan}: {objective_summary}"`
+   - **description:** Structured Agile ticket (see format below)
+
+6. Call `mcp__vibe_kanban__create_task(project_id, title, description)`
+7. Record in TICKET-MAP.md:
    ```
    | {plan} | {task_summary} | {ticket_uuid} | todo | — | {wave} | — | — | new |
    ```
+
+### Agile Ticket Format
+
+```markdown
+## Task
+
+{One-paragraph summary of what to deliver. Written as a user story or task statement.
+Focus on the deliverable, not implementation details. No file paths, no function names, no code snippets.}
+
+## Why
+
+{Why this task matters for the project. What value it adds. What it unblocks.}
+
+## Acceptance Criteria
+
+- [ ] {Observable behavior 1 — from must_haves.truths}
+- [ ] {Observable behavior 2}
+- [ ] {Deliverable exists — from must_haves.artifacts, described generically}
+
+## Dependencies
+
+- {List ticket IDs this depends on, from depends_on field, or "None"}
+
+## Scope
+
+- Wave: {N}
+- Phase: {phase_name}
+- Plan ref: {plan_id} (see .planning/ for implementation details)
+```
+
+**What NOT to include in tickets:**
+- File paths or directory structures
+- Function/class/method names
+- Code snippets or pseudocode
+- Specific library API calls
+- Internal architecture decisions
+
+**Why:** Workers are coding agents with full codebase access. They figure out implementation from context. Tickets that prescribe code become stale, create merge conflicts, and prevent the agent from making better decisions based on actual codebase state.
 
 </step>
 
@@ -82,10 +125,12 @@ For each modified plan:
 
 1. Find ticket_id from TICKET-MAP.md
 2. Check current ticket status:
-   - If `todo`: safe to update → `update_task(task_id, description=new_content)`
+   - If `todo`: safe to update → rebuild Agile ticket from updated PLAN.md, then `update_task(task_id, description=new_agile_ticket)`
    - If `inprogress`: **WARNING** — worker is running. Log warning, do NOT update.
    - If `done`/`cancelled`: skip (no point updating)
 3. Update TICKET-MAP.md with notes
+
+**Important:** Always regenerate the Agile ticket format from the updated PLAN.md. Never dump raw PLAN.md content into the ticket description.
 
 </step>
 

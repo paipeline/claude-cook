@@ -38,9 +38,11 @@ Phase number: $ARGUMENTS (required — starting phase)
 
 **Flags:**
 - `--manual` — Don't launch the loop, manage manually with `/gsd:pm-cycle`
+- `--background` — Run loop detached (default: foreground with live output)
 - `--executor=X` — Override default executor (CLAUDE_CODE, CURSOR_AGENT, CODEX, etc.)
 - `--skip-plan` — Skip initial planning, assume plans already exist
 - `--max-iterations=N` — Safety cap on loop cycles (default: 0 = unlimited)
+- `--no-notify` — Disable desktop notifications
 </context>
 
 <process>
@@ -123,15 +125,17 @@ If no plans exist OR user wants to re-plan:
 
 **Key difference from /gsd:plan-phase:** After planning, continue to sync+dispatch instead of stopping.
 
-## 5. Sync Plans to Vibe Kanban Tickets
+## 5. Sync Plans to Agile Tickets
 
-Follow the pm-sync workflow:
+Follow the pm-sync workflow — create **Agile-style tickets**, not code dumps:
 
 1. Read all PLAN.md files in the phase directory
-2. For each plan:
+2. For each plan, build an Agile ticket:
+   - Extract: objective, acceptance criteria (must_haves), wave, dependencies
    - Build title: `"Phase {X} Plan {Y}: {objective}"`
-   - Build description: full PLAN.md content
-   - `create_task(project_id, title, description)`
+   - Build description: structured Agile ticket (Task, Why, Acceptance Criteria, Dependencies, Scope)
+   - **No file paths, function names, or code snippets** — tickets describe WHAT to deliver
+   - `create_task(project_id, title, agile_description)`
 3. Write TICKET-MAP.md with all mappings
 
 Present:
@@ -170,33 +174,48 @@ Present:
 | ...    | ...  | ...      | launched |
 ```
 
-## 7. Launch PM Loop (default: autonomous)
+## 7. Launch PM Loop (default: foreground, live output)
 
-### Autonomous Mode (default)
+### Autonomous Mode (default) — FOREGROUND
 
-Launch pm-loop.sh — the Ralph-style infinite loop that calls `/gsd:pm-cycle` each iteration. The brain handles everything from here: monitoring, wave advancement, replanning, phase progression.
+Launch pm-loop.sh in the **foreground** — the user sees live progress, cycle-by-cycle output, progress bars, and desktop notifications for key events. The PM actively reports what it's doing.
 
 ```bash
-nohup ~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations} > .planning/pm-loop.log 2>&1 &
-echo $! > .planning/.pm-loop-pid
+~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations}
 ```
+
+The loop runs in the current terminal. The user sees:
+- Cycle headers with timestamps
+- Full pm-cycle output (banners, ticket tables, decisions)
+- Progress bars between cycles (done/running/todo counts)
+- Countdown to next cycle
+- Desktop notifications for: milestone complete, errors, phase advances
+
+Stop with: `Ctrl+C` | `touch .planning/.pm-stop` | `/gsd:pm-stop`
+
+**Note:** This is a blocking call — it takes over the terminal. The PM actively reports to the user rather than hiding in a log file.
+
+### Background Mode (--background)
+
+If the user explicitly passes `--background`, launch detached:
+
+```bash
+~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations} --background
+```
+
+This re-execs with nohup and exits immediately. Output goes to `.planning/pm-loop.log`.
+
+Desktop notifications still work in background mode (macOS/Linux).
 
 Present:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► AUTONOMOUS MODE ACTIVE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PM ► BACKGROUND MODE
 
 PM loop running (PID: {pid})
-Brain: /gsd:pm-cycle (full lifecycle per iteration)
-Polling every {interval}s
-Log: .planning/PM-LOG.md
-
-The PM will autonomously:
-  plan → sync → dispatch → monitor → replan → advance phases
-
-Stop with: /gsd:pm-stop  or  touch .planning/.pm-stop
-Status: /gsd:pm-status
+Log: tail -f .planning/pm-loop.log
+Stop: /gsd:pm-stop  or  touch .planning/.pm-stop
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ### Manual Mode (--manual)

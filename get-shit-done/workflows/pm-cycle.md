@@ -51,14 +51,15 @@ MILESTONE_COMPLETE ──stop signal──→ EXIT
 
 ### NEEDS_SYNC
 
-**Goal:** Create Vibe Kanban tickets for each plan.
+**Goal:** Create Agile-style Vibe Kanban tickets for each plan.
 
 Follow `pm-sync.md` workflow:
 1. Read all PLAN.md files in phase directory
-2. For each plan:
-   - Extract objective, wave number from frontmatter
+2. For each plan, build an **Agile ticket** (atomic, isolated, code-agnostic):
+   - Extract objective, acceptance criteria (must_haves), wave, dependencies
    - Create VK ticket: `mcp__vibe_kanban__create_task(project_id, title, description)`
-   - Description = full PLAN.md content (worker's complete prompt)
+   - Description = structured Agile ticket (Task, Why, Acceptance Criteria, Dependencies, Scope)
+   - **Do NOT dump PLAN.md content** — tickets describe WHAT to deliver, not HOW to code it
 3. Write TICKET-MAP.md with mapping table
 4. Update STATE.md: phase status → "synced"
 5. Log to PM-LOG.md

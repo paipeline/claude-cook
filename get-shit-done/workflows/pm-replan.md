@@ -87,7 +87,8 @@ Action: Cancel all undone tickets, re-plan from phase goal.
 
 6. Sync to Vibe Kanban:
    - `update_task(failed_ticket_id, status="cancelled")`
-   - `create_task(project_id, fix_title, fix_plan_content)` → new ticket
+   - Build Agile ticket from fix plan (Task, Why, Acceptance Criteria, Dependencies, Scope — no code specifics)
+   - `create_task(project_id, fix_title, agile_ticket_description)` → new ticket
    - Record in TICKET-MAP.md
 
 7. Dispatch fix ticket if autonomous mode

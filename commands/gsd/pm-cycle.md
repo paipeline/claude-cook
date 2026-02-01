@@ -125,12 +125,14 @@ Log to PM-LOG.md:
 
 ### Action: NEEDS_SYNC
 
-Run pm-sync workflow:
+Run pm-sync workflow — create **Agile-style tickets** (NOT code dumps):
 1. Read all PLAN.md files in phase directory
-2. For each plan, call `mcp__vibe_kanban__create_task` with:
+2. For each plan, extract objective, acceptance criteria (must_haves), wave, dependencies
+3. Build an Agile ticket for each plan (Task, Why, Acceptance Criteria, Dependencies, Scope)
+4. Call `mcp__vibe_kanban__create_task` with:
    - Title: "Phase {X} Plan {Y}: {objective}"
-   - Description: Full PLAN.md content (this IS the worker's prompt)
-3. Write TICKET-MAP.md with all mappings
+   - Description: Structured Agile ticket — atomic, isolated, no file paths or code specifics
+5. Write TICKET-MAP.md with all mappings
 
 Update STATE.md: set phase status to "synced".
 
@@ -263,13 +265,22 @@ Run /gsd:complete-milestone to archive and plan next.
 
 ## 4. Cycle Summary
 
-After executing the action, output a brief cycle summary:
+After executing the action, output a **rich cycle report** — the user sees this live in their terminal (pm-loop.sh runs foreground by default). Be informative, not terse.
 
 ```
-[{TIMESTAMP}] Cycle complete — State: {STATE} → Action: {ACTION}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PM ► {ACTION} — Phase {X}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{What happened this cycle — 2-3 sentences describing the action taken,
+any decisions made, and what changed.}
+
+Tickets: {done}/{total} done | {inprogress} running | {todo} queued
+Wave: {current_wave}/{total_waves}
+Next: {What the PM will do on the next cycle}
 ```
 
-This is the only user-visible output per cycle (pm-loop.sh captures it).
+**This is live user-facing output.** The PM loop runs in the foreground — the user is watching. Report progress actively: what you did, what's happening, what's next. Don't be silent.
 
 </process>
 
@@ -281,4 +292,5 @@ This is the only user-visible output per cycle (pm-loop.sh captures it).
 - **Log everything.** Every action gets a PM-LOG.md entry with timestamp.
 - **Respect wave discipline.** Never dispatch wave N+1 until all wave N tickets are done.
 - **Replan, don't panic.** Failed tickets get auto-replanned, not abandoned.
+- **Report actively.** The user sees your output live. Tell them what's happening — don't be a silent background process.
 </constraints>

@@ -424,16 +424,17 @@ Example config:
 ### Product Manager Mode
 
 **`/gsd:pm-start <phase>`**
-Plan a phase, sync to Vibe Kanban tickets, dispatch external coding agents.
+Start fully autonomous PM — plans, syncs, dispatches, monitors, and advances phases.
 
-- Plans phase (reuses gsd-planner + checker pipeline)
-- Syncs plans to Vibe Kanban as tickets (one ticket per PLAN.md)
-- Dispatches wave 1 workers via `start_workspace_session`
-- `--autonomous`: launches `pm-loop.sh` for continuous monitoring
-- `--manual`: shows status and available commands (default)
+- Runs **foreground by default** — live progress, desktop notifications, progress bars
+- Plans phase, syncs to Agile tickets (atomic, code-agnostic), dispatches workers
+- Autonomously monitors, replans on failure, advances phases, completes milestone
+- `--background`: detach to run silently (logs to pm-loop.log, still sends desktop notifications)
+- `--manual`: don't launch loop, manage with `/gsd:pm-cycle` manually
 - `--executor=X`: override default executor (CLAUDE_CODE, CURSOR_AGENT, etc.)
+- `--no-notify`: disable desktop notifications
 
-Usage: `/gsd:pm-start 1 --autonomous`
+Usage: `/gsd:pm-start 1`
 
 **`/gsd:pm-check [phase]`**
 Single monitoring cycle — poll tickets, detect changes, react.
@@ -520,11 +521,11 @@ Usage: `/gsd:pm-stop`
 
 ```
 /gsd:new-project                          # Initialize project
-/gsd:pm-start 1 --autonomous             # Plan + sync + dispatch + auto-monitor
-# pm-loop.sh runs in background, polling every 60s
-/gsd:pm-status                            # Check dashboard anytime
-/gsd:pm-replan 1 "use Redis instead"      # Change plans mid-flight
-/gsd:pm-stop                              # Stop autonomous loop
+/gsd:pm-start 1                           # Starts PM — live progress in terminal
+# PM runs foreground: you see every cycle, progress bars, notifications
+# It plans → syncs tickets → dispatches → monitors → replans → advances phases
+# Stop with Ctrl+C or /gsd:pm-stop from another terminal
+/gsd:pm-replan 1 "use Redis instead"      # Change plans mid-flight (from another terminal)
 ```
 
 **Debugging an issue:**
