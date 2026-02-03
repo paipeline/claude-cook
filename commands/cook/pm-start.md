@@ -142,7 +142,7 @@ Follow the action for the detected state as defined in `pm-cycle.md`:
 
 **You MUST launch pm-loop.sh unless `--manual` flag is explicitly set.** This is not optional. The loop is what makes the PM autonomous — without it, the PM does one cycle and stops.
 
-**If `--manual` is NOT set**, launch pm-loop.sh using the Bash tool with `run_in_background=true` immediately after the first cycle completes:
+**If `--manual` is NOT set**, launch pm-loop.sh as a **foreground Bash command** immediately after the first cycle completes:
 
 ```bash
 ~/.claude/scripts/pm-loop.sh \
@@ -154,28 +154,31 @@ Follow the action for the detected state as defined in `pm-cycle.md`:
 ```
 
 **IMPORTANT:**
-- Use the Bash tool with `run_in_background=true` — this runs in Claude Code's background compute so the user sees live progress in the UI.
-- Do NOT use `--background` flag, `nohup`, or `&`. Let Claude Code manage the background process.
-- Do NOT use `timeout` on the Bash tool — the loop runs indefinitely until milestone complete or `.pm-stop`.
-- The loop runs in foreground mode within the background task, showing live progress bars and status updates.
+
+- Use the Bash tool as a **regular foreground command** (do NOT set `run_in_background`). This streams live output directly in the conversation area so the user sees progress bars, status updates, and poll results in real-time.
+- Do NOT use `--background` flag, `nohup`, `setsid`, `disown`, or `&`.
+- Do NOT set `timeout` on the Bash tool — the loop runs indefinitely until milestone complete or `.pm-stop`.
+- The user can press **Ctrl+B** at any time to push the loop to background and interact with Claude. They can check on it later via `/bashes` or by asking Claude to check the output.
 
 Where:
 - `${init_flag}` is `--init` if the `--init` flag was provided
 - `${prd_flag}` is `--prd=<file>` if provided
 - Phase is auto-detected or from arguments
 
-After launching, confirm to user:
+Before launching, present to user:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► LOOP STARTED (background compute)
+ PM ► LAUNCHING LOOP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-PM loop running in background compute.
-Polling every {interval}s. Progress visible in Claude Code UI.
+PM loop starting. Live output will stream below.
+Polling every {interval}s.
 
+Press Ctrl+B to push to background and interact.
 Stop with: /cook:pm-stop
-Status:    /cook:pm-status
 ```
+
+Then immediately invoke the Bash tool with the pm-loop.sh command.
 
 Stop with: `touch .planning/.pm-stop` | `/cook:pm-stop`
 

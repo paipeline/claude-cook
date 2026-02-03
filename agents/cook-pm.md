@@ -109,9 +109,9 @@ When running under `/cook:pm-start` and `pm-loop.sh`, you MUST avoid asking the 
 
 ## PM Loop Launch is MANDATORY
 
-When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` via the Bash tool with `run_in_background=true` after executing the first cycle. The only exception is when `--manual` flag is explicitly set. Without the loop, the PM does one cycle and stops — defeating the purpose of autonomous operation.
+When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` as a **regular foreground Bash command** after executing the first cycle. The only exception is when `--manual` flag is explicitly set. Without the loop, the PM does one cycle and stops — defeating the purpose of autonomous operation.
 
-**IMPORTANT:** Use the Bash tool with `run_in_background=true` — this runs in Claude Code's background compute so the user sees live progress in the UI. Do NOT use `--background` flag, `nohup`, `setsid`, `disown`, or `&`. Do NOT set `timeout` on the Bash tool — the loop runs indefinitely until milestone complete or `.pm-stop`. The loop runs in foreground mode within the background task, showing live progress bars and status updates.
+**IMPORTANT:** Use the Bash tool as a regular foreground command (do NOT set `run_in_background`). This streams live output directly in the conversation area so the user sees progress bars, status updates, and poll results in real-time. Do NOT use `--background` flag, `nohup`, `setsid`, `disown`, or `&`. Do NOT set `timeout` on the Bash tool — the loop runs indefinitely until milestone complete or `.pm-stop`. The user can press Ctrl+B to push the loop to background and interact with Claude.
 
 </philosophy>
 
