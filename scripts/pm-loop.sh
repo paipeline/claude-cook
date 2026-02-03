@@ -515,8 +515,8 @@ while true; do
   CYCLE_START=$(date +%s)
   CALLS_MADE=$(increment_call_counter)
   update_status "running" "executing" "$CALLS_MADE"
-  claude -p --dangerously-skip-permissions "$PROMPT" 2>&1
-  EXIT_CODE=$?
+  EXIT_CODE=0
+  claude -p --dangerously-skip-permissions "$PROMPT" 2>&1 || EXIT_CODE=$?
   CYCLE_END=$(date +%s)
   CYCLE_DURATION=$((CYCLE_END - CYCLE_START))
 
@@ -620,8 +620,8 @@ while true; do
           echo "- Attempt: $REPLAN_ATTEMPTS/$MAX_REPLAN_ATTEMPTS" >> "$LOG_FILE"
 
           REPLAN_START=$(date +%s)
-          claude -p --dangerously-skip-permissions "/cook:pm-replan" 2>&1
-          REPLAN_EXIT_CODE=$?
+          REPLAN_EXIT_CODE=0
+          claude -p --dangerously-skip-permissions "/cook:pm-replan" 2>&1 || REPLAN_EXIT_CODE=$?
           REPLAN_END=$(date +%s)
           REPLAN_DURATION=$((REPLAN_END - REPLAN_START))
 
