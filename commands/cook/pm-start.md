@@ -145,15 +145,16 @@ Follow the action for the detected state as defined in `pm-cycle.md`:
 **If `--manual` is NOT set**, run this command via Bash tool immediately after the first cycle completes:
 
 ```bash
-nohup ~/.claude/scripts/pm-loop.sh \
+~/.claude/scripts/pm-loop.sh \
   --phase={X} \
   --interval={poll_interval} \
   --max-iterations={max_iterations} \
   --background \
   ${init_flag} \
-  ${prd_flag} \
-  > /dev/null 2>&1 &
+  ${prd_flag}
 ```
+
+**IMPORTANT:** Do NOT wrap this in `nohup` or append `&`. The `--background` flag makes `pm-loop.sh` handle its own detaching internally (via `setsid` or `nohup+disown`). The script prints the PID, writes the pid file, and exits immediately — the loop continues in a fully detached process.
 
 Where:
 - `${init_flag}` is `--init` if the `--init` flag was provided

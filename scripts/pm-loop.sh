@@ -138,12 +138,19 @@ fi
 # ─── Background mode: re-exec detached ───────────────────────────
 
 if [ "$BACKGROUND" = true ]; then
-  # Strip --background from args, re-exec with nohup
+  # Strip --background from args, re-exec fully detached
   ARGS=()
   for arg in "$@"; do
     [ "$arg" != "--background" ] && ARGS+=("$arg")
   done
-  nohup "$0" "${ARGS[@]}" > .planning/pm-loop.log 2>&1 &
+  # Use setsid to create a new session — survives parent shell death
+  # Falls back to nohup+disown if setsid not available
+  if command -v setsid >/dev/null 2>&1; then
+    setsid "$0" "${ARGS[@]}" > .planning/pm-loop.log 2>&1 &
+  else
+    nohup "$0" "${ARGS[@]}" > .planning/pm-loop.log 2>&1 &
+    disown $! 2>/dev/null || true
+  fi
   BG_PID=$!
   echo "$BG_PID" > .planning/.pm-loop-pid
   echo "PM loop launched in background (PID: $BG_PID)"

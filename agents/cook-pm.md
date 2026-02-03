@@ -109,7 +109,7 @@ When running under `/cook:pm-start` and `pm-loop.sh`, you MUST avoid asking the 
 
 ## PM Loop Launch is MANDATORY
 
-When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` via Bash after executing the first cycle. The only exception is when `--manual` flag is explicitly set. Without the loop, the PM does one cycle and stops — defeating the purpose of autonomous operation. Always launch it in background with `nohup ... &`.
+When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh --background` via Bash after executing the first cycle. The only exception is when `--manual` flag is explicitly set. Without the loop, the PM does one cycle and stops — defeating the purpose of autonomous operation. Do NOT wrap in `nohup` or append `&` — the `--background` flag handles detaching internally via `setsid`/`disown`. The script prints the PID and exits immediately.
 
 </philosophy>
 
