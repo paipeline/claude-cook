@@ -1,6 +1,6 @@
 {
   "name": "claude-cook",
-  "version": "1.10.5",
+  "version": "1.10.6",
   "description": "A meta-prompting, context engineering and spec-driven development system for Claude Code, OpenCode and Gemini by TÂCHES.",
   "bin": {
     "claude-cook": "bin/install.js"
