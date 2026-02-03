@@ -524,24 +524,25 @@ while true; do
       update_status "running" "completed_cycle" "$(cat "$CALL_COUNT_FILE" 2>/dev/null || echo 0)"
       print_progress
 
-      # Exit if all tickets are done
+      # Check if all tickets in current phase are done
+      # DON'T exit — let pm-cycle handle phase advancement.
+      # pm-cycle will detect PHASE_COMPLETE and advance to next phase,
+      # or detect MILESTONE_COMPLETE and exit with code 42.
       if all_tickets_done; then
         TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo " PM ► ALL TICKETS DONE"
+        echo " PM ► PHASE TICKETS DONE — advancing..."
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
-        echo "  All tickets complete after $CYCLE cycles."
+        echo "  All current phase tickets complete. Next cycle will advance."
         echo ""
         echo "" >> "$LOG_FILE"
-        echo "## [$TIMESTAMP] LOOP_EXIT" >> "$LOG_FILE"
+        echo "## [$TIMESTAMP] PHASE_TICKETS_DONE" >> "$LOG_FILE"
         echo "" >> "$LOG_FILE"
-        echo "- All tickets done after $CYCLE cycles" >> "$LOG_FILE"
-        update_status "completed" "all_tickets_done" "$(cat "$CALL_COUNT_FILE" 2>/dev/null || echo 0)"
-        rm -f "$PID_FILE"
-        notify "COOK PM" "All tickets done! Phase complete after $CYCLE cycles."
-        exit 0
+        echo "- All tickets done in current phase after $CYCLE cycles" >> "$LOG_FILE"
+        echo "- Continuing loop — pm-cycle will advance to next phase" >> "$LOG_FILE"
+        notify "COOK PM" "Phase tickets done! Advancing to next phase..."
       fi
 
       echo ""
