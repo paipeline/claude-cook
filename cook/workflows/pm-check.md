@@ -133,14 +133,15 @@ Run /cook:pm-start {X+1} to begin next phase.
 ### WORKER_COMPLETED (inprogress → inreview)
 1. Call `get_task(task_id)` to read worker output/notes
 2. Update TICKET-MAP.md: status=inreview, review_started=timestamp
-3. Trigger automated code review:
-   - Spawn `feature-dev:code-reviewer` agent via Task tool
-   - Provide: ticket title, acceptance criteria from ticket description, recent commits (use `git log --oneline -10` to find relevant commits)
-   - The reviewer examines the diff and returns a verdict: **PASS** or **FAIL** with issues
-4. Based on review result:
-   - **PASS:** Update ticket status to `done` via `mcp__vibe_kanban__update_task(task_id, status="done")`. Update TICKET-MAP.md: status=done, completed=timestamp, review=passed. Check if this completes the wave.
-   - **FAIL:** Update ticket status back to `inprogress` via `mcp__vibe_kanban__update_task(task_id, status="inprogress")`. Update TICKET-MAP.md: status=inprogress, review=failed. Append review feedback as a task note via `mcp__vibe_kanban__update_task(task_id, description=original_description + "\n\n## Review Feedback\n\n" + reviewer_issues)`. Re-dispatch the ticket so the worker can address review feedback.
-5. Log review result to PM-LOG.md
+3. Delegate review to Vibe Kanban's review agent:
+   - Call `mcp__vibe_kanban__start_workspace_session(task_id, executor="REVIEW_AGENT", repos=[...])`
+   - This launches VK's review agent on the worker's changes
+   - Update TICKET-MAP: review_dispatched=timestamp
+4. Transition back to MONITORING — PM polls `list_tasks()` to detect review outcomes:
+   - VK review agent marks ticket → `done` (review passed)
+   - VK review agent marks ticket → `inprogress` with feedback (review failed, needs fixes)
+   - PM reacts to these transitions in subsequent poll cycles
+5. Log review dispatch to PM-LOG.md
 
 ### WORKER_AUTO_COMPLETED (inprogress → done, bypass review)
 1. Call `get_task(task_id)` to read worker output/notes

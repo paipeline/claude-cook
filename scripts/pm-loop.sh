@@ -7,13 +7,14 @@
 # State persists via .planning/ files.
 #
 # The PM brain handles the ENTIRE lifecycle autonomously:
-#   plan → sync tickets → dispatch workers → monitor → replan → advance phases → complete milestone
+#   init → research → roadmap → plan → sync tickets → dispatch workers → monitor → review → advance phases → complete milestone
 #
 # RUNS IN FOREGROUND by default — you see live progress.
 # Use --background to detach (output goes to .planning/pm-loop.log).
 #
 # Usage:
 #   ./scripts/pm-loop.sh [--phase=N] [--interval=60] [--max-iterations=50]
+#   ./scripts/pm-loop.sh --init --prd=PRD.md    # Start from scratch with PRD
 #   PM_PHASE=1 PM_POLL_INTERVAL=30 ./scripts/pm-loop.sh
 #
 # Stop:
@@ -32,9 +33,18 @@ MAX_CALLS_PER_HOUR="${PM_MAX_CALLS_PER_HOUR:-0}"  # 0 = unlimited
 MAX_REPLAN_ATTEMPTS="${PM_MAX_REPLAN_ATTEMPTS:-3}"
 BACKGROUND=false
 NOTIFY=true
+INIT_MODE=false
+PRD_FILE=""
 
 for arg in "$@"; do
   case $arg in
+    --init)
+      INIT_MODE=true
+      ;;
+    --prd=*)
+      PRD_FILE="${arg#*=}"
+      INIT_MODE=true
+      ;;
     --phase=*)
       PHASE="${arg#*=}"
       ;;
@@ -68,15 +78,16 @@ for arg in "$@"; do
       exit 0
       ;;
     --help|-h)
-      echo "Usage: pm-loop.sh [--phase=N] [--interval=60] [--max-iterations=0] [--calls=0]"
+      echo "Usage: pm-loop.sh [--phase=N] [--init] [--prd=FILE] [--interval=60] [--max-iterations=0]"
       echo ""
-      echo "Fully autonomous PM loop. Each cycle invokes /cook:pm-cycle which"
-      echo "reads state and decides what to do: plan, sync, dispatch, monitor,"
-      echo "replan, advance phases, or complete milestone."
+      echo "Fully autonomous PM loop. Runs the ENTIRE project lifecycle:"
+      echo "init → research → roadmap → plan → sync → dispatch → monitor → review → advance"
       echo ""
       echo "Runs in FOREGROUND by default — you see live progress."
       echo ""
       echo "Options:"
+      echo "  --init              Start from scratch (create .planning/)"
+      echo "  --prd=FILE          Provide PRD file for project init (implies --init)"
       echo "  --phase=N           Starting phase number (auto-detected if omitted)"
       echo "  --interval=N        Seconds between cycles (default: 60)"
       echo "  --max-iterations=N  Safety cap on cycles (default: 0 = unlimited)"
@@ -106,10 +117,16 @@ done
 
 # ─── Validate ─────────────────────────────────────────────────────
 
-if [ ! -d ".planning" ]; then
+if [ ! -d ".planning" ] && [ "$INIT_MODE" = false ]; then
   echo "ERROR: No .planning/ directory found."
-  echo "Run /cook:new-project first, then /cook:pm-start"
+  echo "Run with --init to start from scratch, or /cook:new-project first"
   exit 1
+fi
+
+# Create .planning/ if --init and it doesn't exist
+if [ "$INIT_MODE" = true ] && [ ! -d ".planning" ]; then
+  mkdir -p .planning
+  echo "Created .planning/ directory"
 fi
 
 if ! command -v claude &> /dev/null; then
@@ -470,10 +487,13 @@ while true; do
   echo ""
 
   # Build the prompt
-  # Only pass phase hint on cycle 1 — after that, pm-cycle auto-detects
+  # Cycle 1: pass phase hint and PRD if provided. After that, pm-cycle auto-detects
   # from STATE.md so it can advance through phases autonomously.
-  if [ "$CYCLE" -eq 1 ] && [ -n "$PHASE" ]; then
-    PROMPT="/cook:pm-cycle $PHASE"
+  if [ "$CYCLE" -eq 1 ]; then
+    PROMPT="/cook:pm-cycle"
+    [ -n "$PHASE" ] && PROMPT="$PROMPT $PHASE"
+    [ "$INIT_MODE" = true ] && PROMPT="$PROMPT --init"
+    [ -n "$PRD_FILE" ] && PROMPT="$PROMPT --prd=$PRD_FILE"
   else
     PROMPT="/cook:pm-cycle"
   fi

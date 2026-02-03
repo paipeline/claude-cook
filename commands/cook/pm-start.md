@@ -1,7 +1,7 @@
 ---
 name: cook:pm-start
-description: Start fully autonomous PM — plans, syncs, dispatches, monitors, and advances phases automatically
-argument-hint: "<phase> [--manual] [--background] [--executor=CLAUDE_CODE] [--skip-plan] [--max-iterations=0] [--max-replans=3] [--calls=0]"
+description: Start fully autonomous PM — runs the entire lifecycle from init to milestone completion
+argument-hint: "[phase] [--init] [--prd=<file>] [--manual] [--background] [--executor=CLAUDE_CODE] [--skip-plan] [--max-iterations=0] [--max-replans=3] [--calls=0]"
 agent: cook-pm
 allowed-tools:
   - Read
@@ -18,29 +18,34 @@ allowed-tools:
 <execution_context>
 @~/.claude/cook/references/ui-brand.md
 @~/.claude/cook/references/vibe-kanban.md
+@~/.claude/cook/workflows/pm-cycle.md
 @~/.claude/cook/workflows/pm-sync.md
 @~/.claude/cook/workflows/pm-dispatch.md
 @~/.claude/agents/cook-pm.md
 </execution_context>
 
 <objective>
-Start the fully autonomous PM agent. Validates environment, sets up VK connection, and launches `pm-loop.sh` — the Ralph-style infinite loop that handles the ENTIRE lifecycle:
+Start the fully autonomous PM agent. Auto-detects the current project state and picks up from the right point in the lifecycle:
 
-**plan → sync tickets → dispatch workers → monitor → replan on failure → advance phases → complete milestone**
+```
+NEEDS_INIT → NEEDS_RESEARCH → NEEDS_ROADMAP → NEEDS_PLANNING → NEEDS_SYNC → NEEDS_DISPATCH → MONITORING → NEEDS_REVIEW → PHASE_COMPLETE → ... → MILESTONE_COMPLETE
+```
 
-After this command, the PM runs unattended. Each loop cycle is a fresh Claude invocation via `/cook:pm-cycle` — no context rot.
+The PM runs the **entire lifecycle** unattended — from project init through research, planning, ticket creation, worker dispatch, code review (via VK review agent), phase advancement, and milestone completion.
 
-Use `--manual` to skip the loop and manage phases manually with `/cook:pm-cycle`.
+Each loop cycle is a fresh Claude invocation via `/cook:pm-cycle` — no context rot.
 </objective>
 
 <context>
-Phase number: $ARGUMENTS (required — starting phase)
+Phase number: $ARGUMENTS (optional — auto-detected if omitted)
 
 **Flags:**
+- `--init` — Start from scratch, create .planning/ and PROJECT.md
+- `--prd=<file>` — Provide a PRD file for project initialization
 - `--manual` — Don't launch the loop, manage manually with `/cook:pm-cycle`
 - `--background` — Run loop detached (default: background when autonomous)
 - `--executor=X` — Override default executor (CLAUDE_CODE, CURSOR_AGENT, CODEX, etc.)
-- `--skip-plan` — Skip initial planning, assume plans already exist
+- `--skip-plan` — Skip planning, assume plans already exist
 - `--max-iterations=N` — Safety cap on loop cycles (default: 0 = unlimited)
 - `--max-replans=N` — Auto replan attempts on repeated errors (default: 3)
 - `--calls=N` — Max Claude calls per hour (default: 0 = unlimited)
@@ -49,23 +54,54 @@ Phase number: $ARGUMENTS (required — starting phase)
 
 <process>
 
-## 1. Validate Environment
+## 1. Auto-Detect State
+
+Classify the current project state to determine where to start:
 
 ```bash
-test -d .planning && echo "exists" || echo "missing"
+# Check each condition in order
+test -d .planning && echo "planning_exists" || echo "no_planning"
+test -f .planning/PROJECT.md && echo "project_exists" || echo "no_project"
+test -f .planning/research/SUMMARY.md && echo "research_done" || echo "no_research"
+test -f .planning/ROADMAP.md && echo "roadmap_exists" || echo "no_roadmap"
 ```
 
-If no `.planning/`: Error — run `/cook:new-project` first.
+**State detection logic:**
 
-Read config:
+| Condition | Detected State | Action |
+|-----------|---------------|--------|
+| No `.planning/` or no `PROJECT.md` | NEEDS_INIT | Scaffold project |
+| No `.planning/research/SUMMARY.md` | NEEDS_RESEARCH | Run research agents |
+| No `ROADMAP.md` | NEEDS_ROADMAP | Create roadmap |
+| Phase has no PLAN.md files | NEEDS_PLANNING | Create plans |
+| Plans exist, no TICKET-MAP | NEEDS_SYNC | Create tickets |
+| TICKET-MAP has todo tickets | NEEDS_DISPATCH | Launch workers |
+| Tickets inprogress/inreview | MONITORING | Poll and react |
+| All tickets done | PHASE_COMPLETE | Advance phase |
+
+**Override:** If `--init` flag is set, always start from NEEDS_INIT regardless of current state.
+
+Present detected state:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PM ► STATE DETECTED: {state}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Starting from: {state description}
+Phase: {N or "new project"}
+```
+
+## 2. Setup Config
+
+Read or create config:
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
 
-Check for pm section. If missing, initialize it:
+If missing or no pm section, initialize:
 ```json
 "pm": {
-  "mode": "manual",
+  "mode": "autonomous",
   "poll_interval_seconds": 60,
   "project_id": null,
   "repos": [],
@@ -77,20 +113,8 @@ Check for pm section. If missing, initialize it:
 ```
 
 Apply flag overrides:
-- `--autonomous` → set `pm.mode` to `"autonomous"`
 - `--manual` → set `pm.mode` to `"manual"`
 - `--executor=X` → set `pm.default_executor`
-
-Write updated config.json.
-
-## 2. Parse Phase Number
-
-Extract phase number from $ARGUMENTS. Validate it exists in ROADMAP.md.
-
-Find or create phase directory:
-```bash
-ls .planning/phases/ | grep "^{phase_num}"
-```
 
 ## 3. Setup Vibe Kanban Connection
 
@@ -101,110 +125,39 @@ If `pm.project_id` is null:
 3. Call `mcp__vibe_kanban__list_repos(project_id)` — get repo details
 4. Save project_id and repos to config.json
 
-Present:
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► CONNECTED TO VIBE KANBAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## 4. Execute First Cycle Inline
 
-Project: {name} ({project_id})
-Repos: {repo_list}
-Executor: {default_executor}
-```
+Run one cycle of the pm-cycle state machine inline (based on detected state from step 1). This ensures the first action happens immediately without waiting for the loop.
 
-## 4. Plan Phase (unless --skip-plan)
+Follow the action for the detected state as defined in `pm-cycle.md`:
+- NEEDS_INIT → scaffold project
+- NEEDS_RESEARCH → spawn research agents
+- NEEDS_ROADMAP → spawn roadmapper
+- NEEDS_PLANNING → spawn planner + checker
+- NEEDS_SYNC → create tickets
+- NEEDS_DISPATCH → dispatch workers
+- MONITORING → poll and react
 
-If plans already exist for this phase AND --skip-plan not specified:
-- Ask user: "Plans already exist. Re-plan or use existing?"
-
-If no plans exist OR user wants to re-plan:
-- Follow the same planning pipeline as `/cook:plan-phase`:
-  1. Resolve model profile
-  2. Optionally run phase researcher
-  3. Spawn cook-planner via Task tool
-  4. Spawn cook-plan-checker to verify
-  5. Iterate planner ↔ checker until plans pass (max 3)
-
-**Key difference from /cook:plan-phase:** After planning, continue to sync+dispatch instead of stopping.
-
-## 5. Sync Plans to Agile Tickets
-
-Follow the pm-sync workflow — create **Agile-style tickets**, not code dumps:
-
-1. Read all PLAN.md files in the phase directory
-2. For each plan, build an Agile ticket:
-   - Extract: objective, acceptance criteria (must_haves), wave, dependencies
-   - Build title: `"Phase {X} Plan {Y}: {objective}"`
-   - Build description: structured Agile ticket (Task, Why, Acceptance Criteria, Dependencies, Scope)
-   - **No file paths, function names, or code snippets** — tickets describe WHAT to deliver
-   - `create_task(project_id, title, agile_description)`
-3. Write TICKET-MAP.md with all mappings
-
-Present:
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► TICKETS SYNCED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-{N} plans → {N} tickets created
-
-| Wave | Plan | Ticket | Title |
-| ---- | ---- | ------ | ----- |
-| ...  | ...  | ...    | ...   |
-```
-
-## 6. Dispatch Wave 1
-
-Follow the pm-dispatch workflow:
-
-1. Collect all wave 1 tickets from TICKET-MAP
-2. For each:
-   - `start_workspace_session(task_id, executor, repos)`
-   - Update TICKET-MAP: status=inprogress, dispatched=now
-3. Log dispatches to PM-LOG.md
-
-Present:
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► WAVE 1 DISPATCHED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-{N} workers launched:
-
-| Ticket | Plan | Executor | Status |
-| ------ | ---- | -------- | ------ |
-| ...    | ...  | ...      | launched |
-```
-
-## 7. Launch PM Loop (default: background in autonomous mode)
+## 5. Launch PM Loop
 
 ### Autonomous Mode (default) — BACKGROUND
 
-Launch pm-loop.sh in the **background** by default in autonomous mode. This avoids blocking the command while keeping the loop running. The loop will automatically trigger `/cook:pm-replan` after repeated failures, up to the configured max.
+Build the pm-loop.sh command with all detected parameters:
 
 ```bash
-~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations} --background
+~/.claude/scripts/pm-loop.sh \
+  --phase={X} \
+  --interval={poll_interval} \
+  --max-iterations={max_iterations} \
+  --background \
+  ${prd_flag}
 ```
 
-Output goes to `.planning/pm-loop.log`. Desktop notifications still work in background mode (macOS/Linux).
+Where `${prd_flag}` is `--prd=<file>` if provided.
 
 Stop with: `touch .planning/.pm-stop` | `/cook:pm-stop`
 
-If the user explicitly asks for foreground mode, run without `--background`.
-
-### Foreground Mode (explicit)
-
-If the user explicitly asks for foreground/live output, launch without `--background`:
-
-```bash
-~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations}
-```
-
-This blocks the terminal and streams live output.
-
-### Manual Mode (--manual only)
-
-Only use manual mode if the user explicitly passes `--manual`. Otherwise always launch the loop.
+### Manual Mode (--manual)
 
 Present:
 ```
@@ -212,17 +165,17 @@ Present:
  PM ► MANUAL MODE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Workers dispatched. Run these commands to manage:
+Run these commands to manage:
 
 /cook:pm-cycle    — Run one full-brain cycle (decides + acts)
 /cook:pm-status   — View dashboard
 /cook:pm-replan   — Modify plans with feedback
 ```
 
-## 8. Update STATE.md
+## 6. Update STATE.md
 
 Update STATE.md with PM status:
-- Current position: Phase X, PM mode active
+- Current position: Phase X (or "initializing"), PM mode active
 - Vibe Kanban Status section: project, tickets, last polled
 
 </process>
