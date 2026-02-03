@@ -197,10 +197,10 @@ print_progress() {
   ticket_map=$(find .planning/phases/ -name "TICKET-MAP.md" -print -quit 2>/dev/null || true)
 
   if [ -n "$ticket_map" ] && [ -f "$ticket_map" ]; then
-    local done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null || echo "0")
-    local inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null || echo "0")
-    local inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null || echo "0")
-    local todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null || echo "0")
+    local done_count; done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null) || done_count=0
+    local inreview_count; inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null) || inreview_count=0
+    local inprogress_count; inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null) || inprogress_count=0
+    local todo_count; todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null) || todo_count=0
     local total=$((done_count + inreview_count + inprogress_count + todo_count))
 
     if [ "$total" -gt 0 ]; then
@@ -234,10 +234,10 @@ all_tickets_done() {
   ticket_map=$(find .planning/phases/ -name "TICKET-MAP.md" -print -quit 2>/dev/null || true)
 
   if [ -n "$ticket_map" ] && [ -f "$ticket_map" ]; then
-    local done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null || echo "0")
-    local inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null || echo "0")
-    local inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null || echo "0")
-    local todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null || echo "0")
+    local done_count; done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null) || done_count=0
+    local inreview_count; inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null) || inreview_count=0
+    local inprogress_count; inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null) || inprogress_count=0
+    local todo_count; todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null) || todo_count=0
     local total=$((done_count + inreview_count + inprogress_count + todo_count))
 
     if [ "$total" -gt 0 ] && [ "$inreview_count" -eq 0 ] && [ "$inprogress_count" -eq 0 ] && [ "$todo_count" -eq 0 ]; then
