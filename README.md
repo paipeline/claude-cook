@@ -9,7 +9,7 @@
 [![npm version](https://img.shields.io/npm/v/claude-cook?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/claude-cook)
 [![npm downloads](https://img.shields.io/npm/dm/claude-cook?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/claude-cook)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/5JJgD5svVS)
-[![GitHub stars](https://img.shields.io/github/stars/glittercowboy/get-shit-done?style=for-the-badge&logo=github&color=181717)](https://github.com/glittercowboy/get-shit-done)
+[![GitHub stars](https://img.shields.io/github/stars/glittercowboy/cook?style=for-the-badge&logo=github&color=181717)](https://github.com/glittercowboy/cook)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
 <br>
@@ -22,7 +22,7 @@ npx claude-cook
 
 <br>
 
-![GSD Install](assets/terminal.svg)
+![COOK Install](assets/terminal.svg)
 
 <br>
 
@@ -48,7 +48,7 @@ I'm a solo developer. I don't write code — Claude Code does.
 
 Other spec-driven development tools exist; BMAD, Speckit... But they all seem to make things way more complicated than they need to be (sprint ceremonies, story points, stakeholder syncs, retrospectives, Jira workflows) or lack real big picture understanding of what you're building. I'm not a 50-person software company. I don't want to play enterprise theater. I'm just a creative person trying to build great things that work.
 
-So I built GSD. The complexity is in the system, not in your workflow. Behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management. What you see: a few commands that just work.
+So I built COOK. The complexity is in the system, not in your workflow. Behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management. What you see: a few commands that just work.
 
 The system gives Claude everything it needs to do the work *and* verify it. I trust the workflow. It just does a good job.
 
@@ -60,7 +60,7 @@ That's what this is. No enterprise roleplay bullshit. Just an incredibly effecti
 
 Vibecoding has a bad reputation. You describe what you want, AI generates code, and you get inconsistent garbage that falls apart at scale.
 
-GSD fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and let Claude Code get to work.
+COOK fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and let Claude Code get to work.
 
 ---
 
@@ -80,11 +80,11 @@ The installer prompts you to choose:
 1. **Runtime** — Claude Code, OpenCode, Gemini, or all
 2. **Location** — Global (all projects) or local (current project only)
 
-Verify with `/gsd:help` inside your chosen runtime.
+Verify with `/cook:help` inside your chosen runtime.
 
 ### Staying Updated
 
-GSD evolves fast. Update periodically:
+COOK evolves fast. Update periodically:
 
 ```bash
 npx claude-cook@latest
@@ -119,8 +119,8 @@ Use `--claude`, `--opencode`, `--gemini`, or `--all` to skip the runtime prompt.
 Clone the repository and run the installer locally:
 
 ```bash
-git clone https://github.com/glittercowboy/get-shit-done.git
-cd get-shit-done
+git clone https://github.com/glittercowboy/cook.git
+cd cook
 node bin/install.js --claude --local
 ```
 
@@ -130,14 +130,14 @@ Installs to `./.claude/` for testing modifications before contributing.
 
 ### Recommended: Skip Permissions Mode
 
-GSD is designed for frictionless automation. Run Claude Code with:
+COOK is designed for frictionless automation. Run Claude Code with:
 
 ```bash
 claude --dangerously-skip-permissions
 ```
 
 > [!TIP]
-> This is how GSD is intended to be used — stopping to approve `date` and `git commit` 50 times defeats the purpose.
+> This is how COOK is intended to be used — stopping to approve `date` and `git commit` 50 times defeats the purpose.
 
 <details>
 <summary><strong>Alternative: Granular Permissions</strong></summary>
@@ -176,12 +176,12 @@ If you prefer not to use that flag, add this to your project's `.claude/settings
 
 ## How It Works
 
-> **Already have code?** Run `/gsd:map-codebase` first. It spawns parallel agents to analyze your stack, architecture, conventions, and concerns. Then `/gsd:new-project` knows your codebase — questions focus on what you're adding, and planning automatically loads your patterns.
+> **Already have code?** Run `/cook:map-codebase` first. It spawns parallel agents to analyze your stack, architecture, conventions, and concerns. Then `/cook:new-project` knows your codebase — questions focus on what you're adding, and planning automatically loads your patterns.
 
 ### 1. Initialize Project
 
 ```
-/gsd:new-project
+/cook:new-project
 ```
 
 One command, one flow. The system:
@@ -200,7 +200,7 @@ You approve the roadmap. Now you're ready to build.
 ### 2. Discuss Phase
 
 ```
-/gsd:discuss-phase 1
+/cook:discuss-phase 1
 ```
 
 **This is where you shape the implementation.**
@@ -228,7 +228,7 @@ The deeper you go here, the more the system builds what you actually want. Skip 
 ### 3. Plan Phase
 
 ```
-/gsd:plan-phase 1
+/cook:plan-phase 1
 ```
 
 The system:
@@ -246,7 +246,7 @@ Each plan is small enough to execute in a fresh context window. No degradation, 
 ### 4. Execute Phase
 
 ```
-/gsd:execute-phase 1
+/cook:execute-phase 1
 ```
 
 The system:
@@ -265,7 +265,7 @@ Walk away, come back to completed work with clean git history.
 ### 5. Verify Work
 
 ```
-/gsd:verify-work 1
+/cook:verify-work 1
 ```
 
 **This is where you confirm it actually works.**
@@ -279,7 +279,7 @@ The system:
 3. **Diagnoses failures automatically** — Spawns debug agents to find root causes
 4. **Creates verified fix plans** — Ready for immediate re-execution
 
-If everything passes, you move on. If something's broken, you don't manually debug — you just run `/gsd:execute-phase` again with the fix plans it created.
+If everything passes, you move on. If something's broken, you don't manually debug — you just run `/cook:execute-phase` again with the fix plans it created.
 
 **Creates:** `{phase}-UAT.md`, fix plans if issues found
 
@@ -288,34 +288,34 @@ If everything passes, you move on. If something's broken, you don't manually deb
 ### 6. Repeat → Complete → Next Milestone
 
 ```
-/gsd:discuss-phase 2
-/gsd:plan-phase 2
-/gsd:execute-phase 2
-/gsd:verify-work 2
+/cook:discuss-phase 2
+/cook:plan-phase 2
+/cook:execute-phase 2
+/cook:verify-work 2
 ...
-/gsd:complete-milestone
-/gsd:new-milestone
+/cook:complete-milestone
+/cook:new-milestone
 ```
 
 Loop **discuss → plan → execute → verify** until milestone complete.
 
 Each phase gets your input (discuss), proper research (plan), clean execution (execute), and human verification (verify). Context stays fresh. Quality stays high.
 
-When all phases are done, `/gsd:complete-milestone` archives the milestone and tags the release.
+When all phases are done, `/cook:complete-milestone` archives the milestone and tags the release.
 
-Then `/gsd:new-milestone` starts the next version — same flow as `new-project` but for your existing codebase. You describe what you want to build next, the system researches the domain, you scope requirements, and it creates a fresh roadmap. Each milestone is a clean cycle: define → build → ship.
+Then `/cook:new-milestone` starts the next version — same flow as `new-project` but for your existing codebase. You describe what you want to build next, the system researches the domain, you scope requirements, and it creates a fresh roadmap. Each milestone is a clean cycle: define → build → ship.
 
 ---
 
 ### Quick Mode
 
 ```
-/gsd:quick
+/cook:quick
 ```
 
 **For ad-hoc tasks that don't need full planning.**
 
-Quick mode gives you GSD guarantees (atomic commits, state tracking) with a faster path:
+Quick mode gives you COOK guarantees (atomic commits, state tracking) with a faster path:
 
 - **Same agents** — Planner + executor, same quality
 - **Skips optional steps** — No research, no plan checker, no verifier
@@ -324,7 +324,7 @@ Quick mode gives you GSD guarantees (atomic commits, state tracking) with a fast
 Use for: bug fixes, small features, config changes, one-off tasks.
 
 ```
-/gsd:quick
+/cook:quick
 > What do you want to do? "Add dark mode toggle to settings"
 ```
 
@@ -338,7 +338,7 @@ Use for: bug fixes, small features, config changes, one-off tasks.
 
 Claude Code is incredibly powerful *if* you give it the context it needs. Most people don't.
 
-GSD handles it for you:
+COOK handles it for you:
 
 | File | What it does |
 |------|--------------|
@@ -421,57 +421,57 @@ You're never locked in. The system adapts.
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:new-project` | Full initialization: questions → research → requirements → roadmap |
-| `/gsd:discuss-phase [N]` | Capture implementation decisions before planning |
-| `/gsd:plan-phase [N]` | Research + plan + verify for a phase |
-| `/gsd:execute-phase <N>` | Execute all plans in parallel waves, verify when complete |
-| `/gsd:verify-work [N]` | Manual user acceptance testing ¹ |
-| `/gsd:audit-milestone` | Verify milestone achieved its definition of done |
-| `/gsd:complete-milestone` | Archive milestone, tag release |
-| `/gsd:new-milestone [name]` | Start next version: questions → research → requirements → roadmap |
+| `/cook:new-project` | Full initialization: questions → research → requirements → roadmap |
+| `/cook:discuss-phase [N]` | Capture implementation decisions before planning |
+| `/cook:plan-phase [N]` | Research + plan + verify for a phase |
+| `/cook:execute-phase <N>` | Execute all plans in parallel waves, verify when complete |
+| `/cook:verify-work [N]` | Manual user acceptance testing ¹ |
+| `/cook:audit-milestone` | Verify milestone achieved its definition of done |
+| `/cook:complete-milestone` | Archive milestone, tag release |
+| `/cook:new-milestone [name]` | Start next version: questions → research → requirements → roadmap |
 
 ### Navigation
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:progress` | Where am I? What's next? |
-| `/gsd:help` | Show all commands and usage guide |
-| `/gsd:update` | Update GSD with changelog preview |
-| `/gsd:join-discord` | Join the GSD Discord community |
+| `/cook:progress` | Where am I? What's next? |
+| `/cook:help` | Show all commands and usage guide |
+| `/cook:update` | Update COOK with changelog preview |
+| `/cook:join-discord` | Join the COOK Discord community |
 
 ### Brownfield
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:map-codebase` | Analyze existing codebase before new-project |
+| `/cook:map-codebase` | Analyze existing codebase before new-project |
 
 ### Phase Management
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:add-phase` | Append phase to roadmap |
-| `/gsd:insert-phase [N]` | Insert urgent work between phases |
-| `/gsd:remove-phase [N]` | Remove future phase, renumber |
-| `/gsd:list-phase-assumptions [N]` | See Claude's intended approach before planning |
-| `/gsd:plan-milestone-gaps` | Create phases to close gaps from audit |
+| `/cook:add-phase` | Append phase to roadmap |
+| `/cook:insert-phase [N]` | Insert urgent work between phases |
+| `/cook:remove-phase [N]` | Remove future phase, renumber |
+| `/cook:list-phase-assumptions [N]` | See Claude's intended approach before planning |
+| `/cook:plan-milestone-gaps` | Create phases to close gaps from audit |
 
 ### Session
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:pause-work` | Create handoff when stopping mid-phase |
-| `/gsd:resume-work` | Restore from last session |
+| `/cook:pause-work` | Create handoff when stopping mid-phase |
+| `/cook:resume-work` | Restore from last session |
 
 ### Utilities
 
 | Command | What it does |
 |---------|--------------|
-| `/gsd:settings` | Configure model profile and workflow agents |
-| `/gsd:set-profile <profile>` | Switch model profile (quality/balanced/budget) |
-| `/gsd:add-todo [desc]` | Capture idea for later |
-| `/gsd:check-todos` | List pending todos |
-| `/gsd:debug [desc]` | Systematic debugging with persistent state |
-| `/gsd:quick` | Execute ad-hoc task with GSD guarantees |
+| `/cook:settings` | Configure model profile and workflow agents |
+| `/cook:set-profile <profile>` | Switch model profile (quality/balanced/budget) |
+| `/cook:add-todo [desc]` | Capture idea for later |
+| `/cook:check-todos` | List pending todos |
+| `/cook:debug [desc]` | Systematic debugging with persistent state |
+| `/cook:quick` | Execute ad-hoc task with COOK guarantees |
 
 <sup>¹ Contributed by reddit user OracleGreyBeard</sup>
 
@@ -479,7 +479,7 @@ You're never locked in. The system adapts.
 
 ## Configuration
 
-GSD stores project settings in `.planning/config.json`. Configure during `/gsd:new-project` or update later with `/gsd:settings`.
+COOK stores project settings in `.planning/config.json`. Configure during `/cook:new-project` or update later with `/cook:settings`.
 
 ### Core Settings
 
@@ -500,10 +500,10 @@ Control which Claude model each agent uses. Balance quality vs token spend.
 
 Switch profiles:
 ```
-/gsd:set-profile budget
+/cook:set-profile budget
 ```
 
-Or configure via `/gsd:settings`.
+Or configure via `/cook:settings`.
 
 ### Workflow Agents
 
@@ -515,9 +515,9 @@ These spawn additional agents during planning/execution. They improve quality bu
 | `workflow.plan_check` | `true` | Verifies plans achieve phase goals before execution |
 | `workflow.verifier` | `true` | Confirms must-haves were delivered after execution |
 
-Use `/gsd:settings` to toggle these, or override per-invocation:
-- `/gsd:plan-phase --skip-research`
-- `/gsd:plan-phase --skip-verify`
+Use `/cook:settings` to toggle these, or override per-invocation:
+- `/cook:plan-phase --skip-research`
+- `/cook:plan-phase --skip-verify`
 
 ### Execution
 
@@ -532,10 +532,10 @@ Use `/gsd:settings` to toggle these, or override per-invocation:
 
 **Commands not found after install?**
 - Restart Claude Code to reload slash commands
-- Verify files exist in `~/.claude/commands/gsd/` (global) or `./.claude/commands/gsd/` (local)
+- Verify files exist in `~/.claude/commands/cook/` (global) or `./.claude/commands/cook/` (local)
 
 **Commands not working as expected?**
-- Run `/gsd:help` to verify installation
+- Run `/cook:help` to verify installation
 - Re-run `npx claude-cook` to reinstall
 
 **Updating to the latest version?**
@@ -553,7 +553,7 @@ This ensures absolute paths are used instead of `~` which may not expand correct
 
 ### Uninstalling
 
-To remove GSD completely:
+To remove COOK completely:
 
 ```bash
 # Global installs
@@ -565,7 +565,7 @@ npx claude-cook --claude --local --uninstall
 npx claude-cook --opencode --local --uninstall
 ```
 
-This removes all GSD commands, agents, hooks, and settings while preserving your other configurations.
+This removes all COOK commands, agents, hooks, and settings while preserving your other configurations.
 
 ---
 
@@ -577,18 +577,18 @@ These community ports pioneered multi-runtime support:
 
 | Project | Platform | Description |
 |---------|----------|-------------|
-| [gsd-opencode](https://github.com/rokicool/gsd-opencode) | OpenCode | Original OpenCode adaptation |
-| [gsd-gemini](https://github.com/uberfuzzy/gsd-gemini) | Gemini CLI | Original Gemini adaptation |
+| [cook-opencode](https://github.com/rokicool/cook-opencode) | OpenCode | Original OpenCode adaptation |
+| [cook-gemini](https://github.com/uberfuzzy/cook-gemini) | Gemini CLI | Original Gemini adaptation |
 
 ---
 
 ## Star History
 
-<a href="https://star-history.com/#glittercowboy/get-shit-done&Date">
+<a href="https://star-history.com/#glittercowboy/cook&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=glittercowboy/get-shit-done&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=glittercowboy/get-shit-done&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=glittercowboy/get-shit-done&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=glittercowboy/cook&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=glittercowboy/cook&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=glittercowboy/cook&type=Date" />
  </picture>
 </a>
 
@@ -602,6 +602,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Claude Code is powerful. GSD makes it reliable.**
+**Claude Code is powerful. COOK makes it reliable.**
 
 </div>

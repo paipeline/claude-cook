@@ -6,7 +6,7 @@ No enterprise theater. Ship useful code.
 
 ## Philosophy
 
-GSD optimizes for **solo developer + Claude workflow**. The release process follows the same principle: complexity lives in automation, not your workflow.
+COOK optimizes for **solo developer + Claude workflow**. The release process follows the same principle: complexity lives in automation, not your workflow.
 
 **What this means:**
 - No sprint ceremonies or release committees
@@ -171,7 +171,7 @@ npm publish
 Create formal releases for minor+ versions. Copy the CHANGELOG section.
 
 ```
-Go to: github.com/glittercowboy/get-shit-done/releases/new
+Go to: github.com/glittercowboy/cook/releases/new
 Select tag: v1.10.0
 Title: v1.10.0
 Description: [paste from CHANGELOG.md]
@@ -242,7 +242,7 @@ fix(install): use absolute paths on Windows
 
 ### Review Checklist
 
-- [ ] Follows GSD style (no enterprise patterns, no filler)
+- [ ] Follows COOK style (no enterprise patterns, no filler)
 - [ ] Updates CHANGELOG.md for user-facing changes
 - [ ] Doesn't add unnecessary dependencies
 - [ ] Works on Windows (test paths with backslashes)
@@ -251,7 +251,7 @@ fix(install): use absolute paths on Windows
 
 ## What NOT to Do
 
-Borrowed from GSD-STYLE.md:
+Borrowed from COOK-STYLE.md:
 
 **Enterprise Patterns (Banned):**
 - Story points
@@ -302,8 +302,8 @@ Exception: CHANGELOG.md, MIGRATION.md, git commits
 
 ```bash
 # Clone
-git clone https://github.com/glittercowboy/get-shit-done.git
-cd get-shit-done
+git clone https://github.com/glittercowboy/cook.git
+cd cook
 
 # Install
 npm install

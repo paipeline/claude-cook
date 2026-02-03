@@ -8,7 +8,7 @@
   "files": [
     "bin",
     "commands",
-    "get-shit-done",
+    "cook",
     "agents",
     "hooks/dist",
     "scripts"
@@ -27,11 +27,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/glittercowboy/get-shit-done.git"
+    "url": "git+https://github.com/glittercowboy/cook.git"
   },
-  "homepage": "https://github.com/glittercowboy/get-shit-done",
+  "homepage": "https://github.com/glittercowboy/cook",
   "bugs": {
-    "url": "https://github.com/glittercowboy/get-shit-done/issues"
+    "url": "https://github.com/glittercowboy/cook/issues"
   },
   "engines": {
     "node": ">=16.7.0"

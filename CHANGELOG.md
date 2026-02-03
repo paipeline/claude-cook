@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to GSD will be documented in this file.
+All notable changes to COOK will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
@@ -23,7 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.12] - 2025-01-23
 
 ### Removed
-- `/gsd:whats-new` command — use `/gsd:update` instead (shows changelog with cancel option)
+- `/cook:whats-new` command — use `/cook:update` instead (shows changelog with cancel option)
 
 ### Fixed
 - Restored auto-release GitHub Actions workflow
@@ -44,12 +44,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.9] - 2026-01-23
 
 ### Added
-- `/gsd:join-discord` command to quickly access the GSD Discord community invite link
+- `/cook:join-discord` command to quickly access the COOK Discord community invite link
 
 ## [1.9.8] - 2025-01-22
 
 ### Added
-- Uninstall flag (`--uninstall`) to cleanly remove GSD from global or local installations
+- Uninstall flag (`--uninstall`) to cleanly remove COOK from global or local installations
 
 ### Fixed
 - Context file detection now matches filename variants (handles both `CONTEXT.md` and `{phase}-CONTEXT.md` patterns)
@@ -58,16 +58,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - OpenCode installer now uses correct XDG-compliant config path (`~/.config/opencode/`) instead of `~/.opencode/`
-- OpenCode commands use flat structure (`command/gsd-help.md`) matching OpenCode's expected format
+- OpenCode commands use flat structure (`command/cook-help.md`) matching OpenCode's expected format
 - OpenCode permissions written to `~/.config/opencode/opencode.json`
 
 ## [1.9.6] - 2026-01-22
 
 ### Added
 - Interactive runtime selection: installer now prompts to choose Claude Code, OpenCode, or both
-- Native OpenCode support: `--opencode` flag converts GSD to OpenCode format automatically
+- Native OpenCode support: `--opencode` flag converts COOK to OpenCode format automatically
 - `--both` flag to install for both Claude Code and OpenCode in one command
-- Auto-configures `~/.opencode.json` permissions for seamless GSD doc access
+- Auto-configures `~/.opencode.json` permissions for seamless COOK doc access
 
 ### Changed
 - Installation flow now asks for runtime first, then location
@@ -79,7 +79,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Subagents can now access MCP tools (Context7, etc.) - workaround for Claude Code bug #13898
 - Installer: Escape/Ctrl+C now cancels instead of installing globally
 - Installer: Fixed hook paths on Windows
-- Removed stray backticks in `/gsd:new-project` output
+- Removed stray backticks in `/cook:new-project` output
 
 ### Changed
 - Condensed verbose documentation in templates and workflows (-170 lines)
@@ -98,10 +98,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 - **Codebase Intelligence System** — Removed due to overengineering concerns
-  - Deleted `/gsd:analyze-codebase` command
-  - Deleted `/gsd:query-intel` command
+  - Deleted `/cook:analyze-codebase` command
+  - Deleted `/cook:query-intel` command
   - Removed SQLite graph database and sql.js dependency (21MB)
-  - Removed intel hooks (gsd-intel-index.js, gsd-intel-session.js, gsd-intel-prune.js)
+  - Removed intel hooks (cook-intel-index.js, cook-intel-session.js, cook-intel-prune.js)
   - Removed entity file generation and templates
 
 ### Fixed
@@ -110,19 +110,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.0] - 2025-01-20
 
 ### Added
-- **Model Profiles** — `/gsd:set-profile` for quality/balanced/budget agent configurations
-- **Workflow Settings** — `/gsd:settings` command for toggling workflow behaviors interactively
+- **Model Profiles** — `/cook:set-profile` for quality/balanced/budget agent configurations
+- **Workflow Settings** — `/cook:settings` command for toggling workflow behaviors interactively
 
 ### Fixed
 - Orchestrators now inline file contents in Task prompts (fixes context issues with @ references)
 - Tech debt from milestone audit addressed
-- All hooks now use `gsd-` prefix for consistency (statusline.js → gsd-statusline.js)
+- All hooks now use `cook-` prefix for consistency (statusline.js → cook-statusline.js)
 
 ## [1.8.0] - 2026-01-19
 
 ### Added
 - Uncommitted planning mode: Keep `.planning/` local-only (not committed to git) via `planning.commit_docs: false` in config.json. Useful for OSS contributions, client work, or privacy preferences.
-- `/gsd:new-project` now asks about git tracking during initial setup, letting you opt out of committing planning docs from the start
+- `/cook:new-project` now asks about git tracking during initial setup, letting you opt out of committing planning docs from the start
 
 ## [1.7.1] - 2026-01-19
 
@@ -132,11 +132,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.7.0] - 2026-01-19
 
 ### Added
-- **Quick Mode** (`/gsd:quick`) — Execute small, ad-hoc tasks with GSD guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.planning/quick/` with their own tracking in STATE.md.
+- **Quick Mode** (`/cook:quick`) — Execute small, ad-hoc tasks with COOK guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.planning/quick/` with their own tracking in STATE.md.
 
 ### Changed
 - Improved progress bar calculation to clamp values within 0-100 range
-- Updated documentation with comprehensive Quick Mode sections in help.md, README.md, and GSD-STYLE.md
+- Updated documentation with comprehensive Quick Mode sections in help.md, README.md, and COOK-STYLE.md
 
 ### Fixed
 - Console window flash on Windows when running hooks
@@ -144,7 +144,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Consistent `allowed-tools` YAML format across agents
 - Corrected agent name in research-phase heading
 - Removed hardcoded 2025 year from search query examples
-- Removed dead gsd-researcher agent references
+- Removed dead cook-researcher agent references
 - Integrated unused reference files into documentation
 
 ### Housekeeping
@@ -155,12 +155,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - Installation on WSL2/non-TTY terminals now works correctly - detects non-interactive stdin and falls back to global install automatically
 - Installation now verifies files were actually copied before showing success checkmarks
-- Orphaned `gsd-notify.sh` hook from previous versions is now automatically removed during install (both file and settings.json registration)
+- Orphaned `cook-notify.sh` hook from previous versions is now automatically removed during install (both file and settings.json registration)
 
 ## [1.6.3] - 2025-01-17
 
 ### Added
-- `--gaps-only` flag for `/gsd:execute-phase` — executes only gap closure plans after verify-work finds issues, eliminating redundant state discovery
+- `--gaps-only` flag for `/cook:execute-phase` — executes only gap closure plans after verify-work finds issues, eliminating redundant state discovery
 
 ## [1.6.2] - 2025-01-17
 
@@ -174,29 +174,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.6.1] - 2025-01-17
 
 ### Changed
-- Installer performs clean install of GSD folders, removing orphaned files from previous versions
-- `/gsd:update` shows changelog and asks for confirmation before updating, with clear warning about what gets replaced
+- Installer performs clean install of COOK folders, removing orphaned files from previous versions
+- `/cook:update` shows changelog and asks for confirmation before updating, with clear warning about what gets replaced
 
 ## [1.6.0] - 2026-01-17
 
 ### Changed
-- **BREAKING:** Unified `/gsd:new-milestone` flow — now mirrors `/gsd:new-project` with questioning → research → requirements → roadmap in a single command
+- **BREAKING:** Unified `/cook:new-milestone` flow — now mirrors `/cook:new-project` with questioning → research → requirements → roadmap in a single command
 - Roadmapper agent now references templates instead of inline structures for easier maintenance
 
 ### Removed
-- **BREAKING:** `/gsd:discuss-milestone` — consolidated into `/gsd:new-milestone`
-- **BREAKING:** `/gsd:create-roadmap` — integrated into project/milestone flows
-- **BREAKING:** `/gsd:define-requirements` — integrated into project/milestone flows
-- **BREAKING:** `/gsd:research-project` — integrated into project/milestone flows
+- **BREAKING:** `/cook:discuss-milestone` — consolidated into `/cook:new-milestone`
+- **BREAKING:** `/cook:create-roadmap` — integrated into project/milestone flows
+- **BREAKING:** `/cook:define-requirements` — integrated into project/milestone flows
+- **BREAKING:** `/cook:research-project` — integrated into project/milestone flows
 
 ### Added
-- `/gsd:verify-work` now includes next-step routing after verification completes
+- `/cook:verify-work` now includes next-step routing after verification completes
 
 ## [1.5.30] - 2026-01-17
 
 ### Fixed
 - Output templates in `plan-phase`, `execute-phase`, and `audit-milestone` now render markdown correctly instead of showing literal backticks
-- Next-step suggestions now consistently recommend `/gsd:discuss-phase` before `/gsd:plan-phase` across all routing paths
+- Next-step suggestions now consistently recommend `/cook:discuss-phase` before `/cook:plan-phase` across all routing paths
 
 ## [1.5.29] - 2025-01-16
 
@@ -206,14 +206,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - Windows hooks now work via Node.js conversion (statusline, update-check)
 - Phase input normalization at command entry points
-- Removed blocking notification popups (gsd-notify) on all platforms
+- Removed blocking notification popups (cook-notify) on all platforms
 
 ## [1.5.28] - 2026-01-16
 
 ### Changed
 - Consolidated milestone workflow into single command
 - Merged domain expertise skills into agent configurations
-- **BREAKING:** Removed `/gsd:execute-plan` command (use `/gsd:execute-phase` instead)
+- **BREAKING:** Removed `/cook:execute-plan` command (use `/cook:execute-phase` instead)
 
 ### Fixed
 - Phase directory matching now handles both zero-padded (05-*) and unpadded (5-*) folder names
@@ -251,12 +251,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Consistent zero-padding for phase directories (01-name, not 1-name)
 - Plan file naming: `{phase}-{plan}-PLAN.md` pattern restored across all agents
 - Double-path bug in researcher git add command
-- Removed `/gsd:research-phase` from next-step suggestions (use `/gsd:plan-phase` instead)
+- Removed `/cook:research-phase` from next-step suggestions (use `/cook:plan-phase` instead)
 
 ## [1.5.22] - 2025-01-16
 
 ### Added
-- Statusline update indicator — shows `⬆ /gsd:update` when a new version is available
+- Statusline update indicator — shows `⬆ /cook:update` when a new version is available
 
 ### Fixed
 - Planner now updates ROADMAP.md placeholders after planning completes
@@ -264,13 +264,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.21] - 2026-01-16
 
 ### Added
-- GSD brand system for consistent UI (checkpoint boxes, stage banners, status symbols)
+- COOK brand system for consistent UI (checkpoint boxes, stage banners, status symbols)
 - Research synthesizer agent that consolidates parallel research into SUMMARY.md
 
 ### Changed
-- **Unified `/gsd:new-project` flow** — Single command now handles questions → research → requirements → roadmap (~10 min)
+- **Unified `/cook:new-project` flow** — Single command now handles questions → research → requirements → roadmap (~10 min)
 - Simplified README to reflect streamlined workflow: new-project → plan-phase → execute-phase
-- Added optional `/gsd:discuss-phase` documentation for UI/UX/behavior decisions before planning
+- Added optional `/cook:discuss-phase` documentation for UI/UX/behavior decisions before planning
 
 ### Fixed
 - verify-work now shows clear checkpoint box with action prompt ("Type 'pass' or describe what's wrong")
@@ -293,36 +293,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.19] - 2026-01-16
 
 ### Changed
-- `/gsd:discuss-phase` redesigned with intelligent gray area analysis — analyzes phase to identify discussable areas (UI, UX, Behavior, etc.), presents multi-select for user control, deep-dives each area with focused questioning
+- `/cook:discuss-phase` redesigned with intelligent gray area analysis — analyzes phase to identify discussable areas (UI, UX, Behavior, etc.), presents multi-select for user control, deep-dives each area with focused questioning
 - Explicit scope guardrail prevents scope creep during discussion — captures deferred ideas without acting on them
 - CONTEXT.md template restructured for decisions (domain boundary, decisions by category, Claude's discretion, deferred ideas)
 - Downstream awareness: discuss-phase now explicitly documents that CONTEXT.md feeds researcher and planner agents
-- `/gsd:plan-phase` now integrates research — spawns `gsd-phase-researcher` before planning unless research exists or `--skip-research` flag used
+- `/cook:plan-phase` now integrates research — spawns `cook-phase-researcher` before planning unless research exists or `--skip-research` flag used
 
 ## [1.5.18] - 2026-01-16
 
 ### Added
 - **Plan verification loop** — Plans are now verified before execution with a planner → checker → revise cycle
-  - New `gsd-plan-checker` agent (744 lines) validates plans will achieve phase goals
+  - New `cook-plan-checker` agent (744 lines) validates plans will achieve phase goals
   - Six verification dimensions: requirement coverage, task completeness, dependency correctness, key links, scope sanity, must_haves derivation
   - Max 3 revision iterations before user escalation
   - `--skip-verify` flag for experienced users who want to bypass verification
-- **Dedicated planner agent** — `gsd-planner` (1,319 lines) consolidates all planning expertise
+- **Dedicated planner agent** — `cook-planner` (1,319 lines) consolidates all planning expertise
   - Complete methodology: discovery levels, task breakdown, dependency graphs, scope estimation, goal-backward analysis
   - Revision mode for handling checker feedback
   - TDD integration and checkpoint patterns
 - **Statusline integration** — Context usage, model, and current task display
 
 ### Changed
-- `/gsd:plan-phase` refactored to thin orchestrator pattern (310 lines)
-  - Spawns `gsd-planner` for planning, `gsd-plan-checker` for verification
+- `/cook:plan-phase` refactored to thin orchestrator pattern (310 lines)
+  - Spawns `cook-planner` for planning, `cook-plan-checker` for verification
   - User sees status between agent spawns (not a black box)
-- Planning references deprecated with redirects to `gsd-planner` agent sections
+- Planning references deprecated with redirects to `cook-planner` agent sections
   - `plan-format.md`, `scope-estimation.md`, `goal-backward.md`, `principles.md`
   - `workflows/plan-phase.md`
 
 ### Fixed
-- Removed zombie `gsd-milestone-auditor` agent (was accidentally re-added after correct deletion)
+- Removed zombie `cook-milestone-auditor` agent (was accidentally re-added after correct deletion)
 
 ### Removed
 - Phase 99 throwaway test files
@@ -330,48 +330,48 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.17] - 2026-01-15
 
 ### Added
-- New `/gsd:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx claude-cook`)
+- New `/cook:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx claude-cook`)
 
 ## [1.5.16] - 2026-01-15
 
 ### Added
-- New `gsd-researcher` agent (915 lines) with comprehensive research methodology, 4 research modes (ecosystem, feasibility, implementation, comparison), source hierarchy, and verification protocols
-- New `gsd-debugger` agent (990 lines) with scientific debugging methodology, hypothesis testing, and 7+ investigation techniques
-- New `gsd-codebase-mapper` agent for brownfield codebase analysis
+- New `cook-researcher` agent (915 lines) with comprehensive research methodology, 4 research modes (ecosystem, feasibility, implementation, comparison), source hierarchy, and verification protocols
+- New `cook-debugger` agent (990 lines) with scientific debugging methodology, hypothesis testing, and 7+ investigation techniques
+- New `cook-codebase-mapper` agent for brownfield codebase analysis
 - Research subagent prompt template for context-only spawning
 
 ### Changed
-- `/gsd:research-phase` refactored to thin orchestrator — now injects rich context (key insight framing, downstream consumer info, quality gates) to gsd-researcher agent
-- `/gsd:research-project` refactored to spawn 4 parallel gsd-researcher agents with milestone-aware context (greenfield vs v1.1+) and roadmap implications guidance
-- `/gsd:debug` refactored to thin orchestrator (149 lines) — spawns gsd-debugger agent with full debugging expertise
-- `/gsd:new-milestone` now explicitly references MILESTONE-CONTEXT.md
+- `/cook:research-phase` refactored to thin orchestrator — now injects rich context (key insight framing, downstream consumer info, quality gates) to cook-researcher agent
+- `/cook:research-project` refactored to spawn 4 parallel cook-researcher agents with milestone-aware context (greenfield vs v1.1+) and roadmap implications guidance
+- `/cook:debug` refactored to thin orchestrator (149 lines) — spawns cook-debugger agent with full debugging expertise
+- `/cook:new-milestone` now explicitly references MILESTONE-CONTEXT.md
 
 ### Deprecated
-- `workflows/research-phase.md` — consolidated into gsd-researcher agent
-- `workflows/research-project.md` — consolidated into gsd-researcher agent
-- `workflows/debug.md` — consolidated into gsd-debugger agent
-- `references/research-pitfalls.md` — consolidated into gsd-researcher agent
-- `references/debugging.md` — consolidated into gsd-debugger agent
-- `references/debug-investigation.md` — consolidated into gsd-debugger agent
+- `workflows/research-phase.md` — consolidated into cook-researcher agent
+- `workflows/research-project.md` — consolidated into cook-researcher agent
+- `workflows/debug.md` — consolidated into cook-debugger agent
+- `references/research-pitfalls.md` — consolidated into cook-researcher agent
+- `references/debugging.md` — consolidated into cook-debugger agent
+- `references/debug-investigation.md` — consolidated into cook-debugger agent
 
 ## [1.5.15] - 2025-01-15
 
 ### Fixed
-- **Agents now install correctly** — The `agents/` folder (gsd-executor, gsd-verifier, gsd-integration-checker, gsd-milestone-auditor) was missing from npm package, now included
+- **Agents now install correctly** — The `agents/` folder (cook-executor, cook-verifier, cook-integration-checker, cook-milestone-auditor) was missing from npm package, now included
 
 ### Changed
-- Consolidated `/gsd:plan-fix` into `/gsd:plan-phase --gaps` for simpler workflow
+- Consolidated `/cook:plan-fix` into `/cook:plan-phase --gaps` for simpler workflow
 - UAT file writes now batched instead of per-response for better performance
 
 ## [1.5.14] - 2025-01-15
 
 ### Fixed
-- Plan-phase now always routes to `/gsd:execute-phase` after planning, even for single-plan phases
+- Plan-phase now always routes to `/cook:execute-phase` after planning, even for single-plan phases
 
 ## [1.5.13] - 2026-01-15
 
 ### Fixed
-- `/gsd:new-milestone` now presents research and requirements paths as equal options, matching `/gsd:new-project` format
+- `/cook:new-milestone` now presents research and requirements paths as equal options, matching `/cook:new-project` format
 
 ## [1.5.12] - 2025-01-15
 
@@ -386,7 +386,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - `MILESTONE-AUDIT.md` now versioned as `v{version}-MILESTONE-AUDIT.md` and archived on completion
-- `progress` now correctly routes to `/gsd:discuss-milestone` when between milestones (Route F)
+- `progress` now correctly routes to `/cook:discuss-milestone` when between milestones (Route F)
 
 ## [1.5.11] - 2025-01-15
 
@@ -404,12 +404,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.9] - 2025-01-15
 
 ### Added
-- Milestone audit system (`/gsd:audit-milestone`) for verifying milestone completion with parallel verification agents
+- Milestone audit system (`/cook:audit-milestone`) for verifying milestone completion with parallel verification agents
 
 ### Changed
 - Checkpoint display format improved with box headers and unmissable "→ YOUR ACTION:" prompts
 - Subagent colors updated (executor: yellow, integration-checker: blue)
-- Execute-phase now recommends `/gsd:audit-milestone` when milestone completes
+- Execute-phase now recommends `/cook:audit-milestone` when milestone completes
 
 ### Fixed
 - Research-phase no longer gatekeeps by domain type
@@ -423,25 +423,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Verification loop: When gaps are found, verifier generates fix plans that execute automatically before re-verifying
 
 ### Changed
-- `gsd-executor` subagent color changed from red to blue
+- `cook-executor` subagent color changed from red to blue
 
 ## [1.5.7] - 2025-01-15
 
 ### Added
-- `gsd-executor` subagent: Dedicated agent for plan execution with full workflow logic built-in
-- `gsd-verifier` subagent: Goal-backward verification that checks if phase goals are actually achieved (not just tasks completed)
+- `cook-executor` subagent: Dedicated agent for plan execution with full workflow logic built-in
+- `cook-verifier` subagent: Goal-backward verification that checks if phase goals are actually achieved (not just tasks completed)
 - Phase verification: Automatic verification runs when a phase completes to catch stubs and incomplete implementations
 - Goal-backward planning reference: Documentation for deriving must-haves from goals
 
 ### Changed
-- execute-plan and execute-phase now spawn `gsd-executor` subagent instead of using inline workflow
+- execute-plan and execute-phase now spawn `cook-executor` subagent instead of using inline workflow
 - Roadmap and planning workflows enhanced with goal-backward analysis
 
 ### Removed
 - Obsolete templates (`checkpoint-resume.md`, `subagent-task-prompt.md`) — logic now lives in subagents
 
 ### Fixed
-- Updated remaining `general-purpose` subagent references to use `gsd-executor`
+- Updated remaining `general-purpose` subagent references to use `cook-executor`
 
 ## [1.5.6] - 2025-01-15
 
@@ -472,7 +472,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **define-requirements**: Works without prior research. Gathers requirements through conversation when FEATURES.md doesn't exist.
 
 ### Removed
-- Dead `/gsd:status` command (referenced abandoned background agent model)
+- Dead `/cook:status` command (referenced abandoned background agent model)
 - Unused `agent-history.md` template
 - `_archive/` directory with old execute-phase version
 
@@ -500,8 +500,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.0] - 2026-01-14
 
 ### Added
-- New `/gsd:research-project` command for pre-roadmap ecosystem research — spawns parallel agents to investigate stack, features, architecture, and pitfalls before you commit to a roadmap
-- New `/gsd:define-requirements` command for scoping v1 requirements from research findings — transforms "what exists in this domain" into "what we're building"
+- New `/cook:research-project` command for pre-roadmap ecosystem research — spawns parallel agents to investigate stack, features, architecture, and pitfalls before you commit to a roadmap
+- New `/cook:define-requirements` command for scoping v1 requirements from research findings — transforms "what exists in this domain" into "what we're building"
 - Requirements traceability: phases now map to specific requirement IDs with 100% coverage validation
 
 ### Changed
@@ -537,7 +537,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.25] - 2026-01-14
 
 ### Added
-- New `/gsd:whats-new` command shows changes since your installed version
+- New `/cook:whats-new` command shows changes since your installed version
 - VERSION file written during installation for version tracking
 - CHANGELOG.md now included in package installation
 
@@ -670,7 +670,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.3] - 2026-01-13
 
 ### Added
-- `/gsd:debug` command for systematic debugging with persistent state
+- `/cook:debug` command for systematic debugging with persistent state
 
 ## [1.4.2] - 2026-01-13
 
@@ -680,9 +680,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.1] - 2026-01-13
 
 ### Added
-- Parallel phase execution via `/gsd:execute-phase`
-- Parallel-aware planning in `/gsd:plan-phase`
-- `/gsd:status` command for parallel agent monitoring
+- Parallel phase execution via `/cook:execute-phase`
+- Parallel-aware planning in `/cook:plan-phase`
+- `/cook:status` command for parallel agent monitoring
 - Parallelization configuration in config.json
 - Wave-based parallel execution with dependency graphs
 
@@ -705,7 +705,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.34] - 2026-01-11
 
 ### Added
-- `/gsd:add-todo` and `/gsd:check-todos` for mid-session idea capture
+- `/cook:add-todo` and `/cook:check-todos` for mid-session idea capture
 
 ## [1.3.33] - 2026-01-11
 
@@ -718,7 +718,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.32] - 2026-01-10
 
 ### Added
-- `/gsd:resume-task` for resuming interrupted subagent executions
+- `/cook:resume-task` for resuming interrupted subagent executions
 
 ## [1.3.31] - 2026-01-08
 
@@ -734,15 +734,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.29] - 2026-01-08
 
 ### Added
-- `/gsd:verify-work` for conversational UAT validation
-- `/gsd:plan-fix` for fixing UAT issues
+- `/cook:verify-work` for conversational UAT validation
+- `/cook:plan-fix` for fixing UAT issues
 - UAT issues template
 
 ## [1.3.28] - 2026-01-07
 
 ### Added
 - `--config-dir` CLI argument for multi-account setups
-- `/gsd:remove-phase` command
+- `/cook:remove-phase` command
 
 ### Fixed
 - Validation for --config-dir edge cases
@@ -890,15 +890,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.1] - 2025-12-17
 
 ### Added
-- `/gsd:map-codebase` documentation in help and README
+- `/cook:map-codebase` documentation in help and README
 
 ## [1.3.0] - 2025-12-17
 
 ### Added
-- `/gsd:map-codebase` command for brownfield project analysis
+- `/cook:map-codebase` command for brownfield project analysis
 - Codebase map templates (stack, architecture, structure, conventions, testing, integrations, concerns)
 - Parallel Explore agent orchestration for codebase analysis
-- Brownfield integration into GSD workflows
+- Brownfield integration into COOK workflows
 
 ### Changed
 - Improved continuation UI with context and visual hierarchy
@@ -991,9 +991,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Pre-roadmap research workflow
-- `/gsd:research-phase` for niche domain ecosystem discovery
-- `/gsd:research-project` command with workflow and templates
-- `/gsd:create-roadmap` command with research-aware workflow
+- `/cook:research-phase` for niche domain ecosystem discovery
+- `/cook:research-project` command with workflow and templates
+- `/cook:create-roadmap` command with research-aware workflow
 - Research subagent prompt templates
 
 ### Changed
@@ -1003,7 +1003,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.0.11] - 2025-12-15
 
 ### Added
-- `/gsd:research-phase` for niche domain ecosystem discovery
+- `/cook:research-phase` for niche domain ecosystem discovery
 
 ## [1.0.10] - 2025-12-15
 
@@ -1062,157 +1062,157 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.0.0] - 2025-12-14
 
 ### Added
-- Initial release of GSD (Get Shit Done) meta-prompting system
-- Core slash commands: `/gsd:new-project`, `/gsd:discuss-phase`, `/gsd:plan-phase`, `/gsd:execute-phase`
+- Initial release of COOK (Get Shit Done) meta-prompting system
+- Core slash commands: `/cook:new-project`, `/cook:discuss-phase`, `/cook:plan-phase`, `/cook:execute-phase`
 - PROJECT.md and STATE.md templates
 - Phase-based development workflow
 - YOLO mode for autonomous execution
 - Interactive mode with checkpoints
 
-[Unreleased]: https://github.com/glittercowboy/get-shit-done/compare/v1.10.1...HEAD
-[1.10.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.10.1
-[1.10.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.10.0
-[1.9.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.12
-[1.9.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.11
-[1.9.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.10
-[1.9.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.9
-[1.9.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.8
-[1.9.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.7
-[1.9.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.6
-[1.9.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.5
-[1.9.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.4
-[1.9.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.2
-[1.9.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.0
-[1.8.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.8.0
-[1.7.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.7.1
-[1.7.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.7.0
-[1.6.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.4
-[1.6.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.3
-[1.6.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.2
-[1.6.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.1
-[1.6.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.0
-[1.5.30]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.30
-[1.5.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.29
-[1.5.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.28
-[1.5.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.27
-[1.5.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.26
-[1.5.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.25
-[1.5.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.24
-[1.5.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.23
-[1.5.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.22
-[1.5.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.21
-[1.5.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.20
-[1.5.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.19
-[1.5.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.18
-[1.5.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.17
-[1.5.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.16
-[1.5.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.15
-[1.5.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.14
-[1.5.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.13
-[1.5.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.12
-[1.5.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.11
-[1.5.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.10
-[1.5.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.9
-[1.5.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.8
-[1.5.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.7
-[1.5.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.6
-[1.5.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.5
-[1.5.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.4
-[1.5.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.3
-[1.5.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.2
-[1.5.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.1
-[1.5.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.0
-[1.4.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.29
-[1.4.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.28
-[1.4.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.27
-[1.4.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.26
-[1.4.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.25
-[1.4.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.24
-[1.4.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.23
-[1.4.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.22
-[1.4.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.21
-[1.4.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.20
-[1.4.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.19
-[1.4.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.18
-[1.4.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.17
-[1.4.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.16
-[1.4.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.15
-[1.4.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.14
-[1.4.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.13
-[1.4.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.12
-[1.4.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.11
-[1.4.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.10
-[1.4.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.9
-[1.4.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.8
-[1.4.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.7
-[1.4.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.6
-[1.4.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.5
-[1.4.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.4
-[1.4.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.3
-[1.4.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.2
-[1.4.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.1
-[1.4.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.0
-[1.3.34]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.34
-[1.3.33]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.33
-[1.3.32]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.32
-[1.3.31]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.31
-[1.3.30]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.30
-[1.3.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.29
-[1.3.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.28
-[1.3.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.27
-[1.3.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.26
-[1.3.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.25
-[1.3.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.24
-[1.3.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.23
-[1.3.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.22
-[1.3.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.21
-[1.3.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.20
-[1.3.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.19
-[1.3.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.18
-[1.3.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.17
-[1.3.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.16
-[1.3.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.15
-[1.3.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.14
-[1.3.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.13
-[1.3.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.12
-[1.3.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.11
-[1.3.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.10
-[1.3.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.9
-[1.3.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.8
-[1.3.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.7
-[1.3.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.6
-[1.3.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.5
-[1.3.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.4
-[1.3.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.3
-[1.3.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.2
-[1.3.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.1
-[1.3.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.0
-[1.2.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.13
-[1.2.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.12
-[1.2.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.11
-[1.2.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.10
-[1.2.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.9
-[1.2.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.8
-[1.2.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.7
-[1.2.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.6
-[1.2.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.5
-[1.2.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.4
-[1.2.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.3
-[1.2.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.2
-[1.2.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.1
-[1.2.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.0
-[1.1.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.2
-[1.1.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.1
-[1.1.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.0
-[1.0.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.11
-[1.0.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.10
-[1.0.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.9
-[1.0.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.8
-[1.0.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.7
-[1.0.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.6
-[1.0.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.5
-[1.0.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.4
-[1.0.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.3
-[1.0.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.2
-[1.0.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.1
-[1.0.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.0
+[Unreleased]: https://github.com/glittercowboy/cook/compare/v1.10.1...HEAD
+[1.10.1]: https://github.com/glittercowboy/cook/releases/tag/v1.10.1
+[1.10.0]: https://github.com/glittercowboy/cook/releases/tag/v1.10.0
+[1.9.12]: https://github.com/glittercowboy/cook/releases/tag/v1.9.12
+[1.9.11]: https://github.com/glittercowboy/cook/releases/tag/v1.9.11
+[1.9.10]: https://github.com/glittercowboy/cook/releases/tag/v1.9.10
+[1.9.9]: https://github.com/glittercowboy/cook/releases/tag/v1.9.9
+[1.9.8]: https://github.com/glittercowboy/cook/releases/tag/v1.9.8
+[1.9.7]: https://github.com/glittercowboy/cook/releases/tag/v1.9.7
+[1.9.6]: https://github.com/glittercowboy/cook/releases/tag/v1.9.6
+[1.9.5]: https://github.com/glittercowboy/cook/releases/tag/v1.9.5
+[1.9.4]: https://github.com/glittercowboy/cook/releases/tag/v1.9.4
+[1.9.2]: https://github.com/glittercowboy/cook/releases/tag/v1.9.2
+[1.9.0]: https://github.com/glittercowboy/cook/releases/tag/v1.9.0
+[1.8.0]: https://github.com/glittercowboy/cook/releases/tag/v1.8.0
+[1.7.1]: https://github.com/glittercowboy/cook/releases/tag/v1.7.1
+[1.7.0]: https://github.com/glittercowboy/cook/releases/tag/v1.7.0
+[1.6.4]: https://github.com/glittercowboy/cook/releases/tag/v1.6.4
+[1.6.3]: https://github.com/glittercowboy/cook/releases/tag/v1.6.3
+[1.6.2]: https://github.com/glittercowboy/cook/releases/tag/v1.6.2
+[1.6.1]: https://github.com/glittercowboy/cook/releases/tag/v1.6.1
+[1.6.0]: https://github.com/glittercowboy/cook/releases/tag/v1.6.0
+[1.5.30]: https://github.com/glittercowboy/cook/releases/tag/v1.5.30
+[1.5.29]: https://github.com/glittercowboy/cook/releases/tag/v1.5.29
+[1.5.28]: https://github.com/glittercowboy/cook/releases/tag/v1.5.28
+[1.5.27]: https://github.com/glittercowboy/cook/releases/tag/v1.5.27
+[1.5.26]: https://github.com/glittercowboy/cook/releases/tag/v1.5.26
+[1.5.25]: https://github.com/glittercowboy/cook/releases/tag/v1.5.25
+[1.5.24]: https://github.com/glittercowboy/cook/releases/tag/v1.5.24
+[1.5.23]: https://github.com/glittercowboy/cook/releases/tag/v1.5.23
+[1.5.22]: https://github.com/glittercowboy/cook/releases/tag/v1.5.22
+[1.5.21]: https://github.com/glittercowboy/cook/releases/tag/v1.5.21
+[1.5.20]: https://github.com/glittercowboy/cook/releases/tag/v1.5.20
+[1.5.19]: https://github.com/glittercowboy/cook/releases/tag/v1.5.19
+[1.5.18]: https://github.com/glittercowboy/cook/releases/tag/v1.5.18
+[1.5.17]: https://github.com/glittercowboy/cook/releases/tag/v1.5.17
+[1.5.16]: https://github.com/glittercowboy/cook/releases/tag/v1.5.16
+[1.5.15]: https://github.com/glittercowboy/cook/releases/tag/v1.5.15
+[1.5.14]: https://github.com/glittercowboy/cook/releases/tag/v1.5.14
+[1.5.13]: https://github.com/glittercowboy/cook/releases/tag/v1.5.13
+[1.5.12]: https://github.com/glittercowboy/cook/releases/tag/v1.5.12
+[1.5.11]: https://github.com/glittercowboy/cook/releases/tag/v1.5.11
+[1.5.10]: https://github.com/glittercowboy/cook/releases/tag/v1.5.10
+[1.5.9]: https://github.com/glittercowboy/cook/releases/tag/v1.5.9
+[1.5.8]: https://github.com/glittercowboy/cook/releases/tag/v1.5.8
+[1.5.7]: https://github.com/glittercowboy/cook/releases/tag/v1.5.7
+[1.5.6]: https://github.com/glittercowboy/cook/releases/tag/v1.5.6
+[1.5.5]: https://github.com/glittercowboy/cook/releases/tag/v1.5.5
+[1.5.4]: https://github.com/glittercowboy/cook/releases/tag/v1.5.4
+[1.5.3]: https://github.com/glittercowboy/cook/releases/tag/v1.5.3
+[1.5.2]: https://github.com/glittercowboy/cook/releases/tag/v1.5.2
+[1.5.1]: https://github.com/glittercowboy/cook/releases/tag/v1.5.1
+[1.5.0]: https://github.com/glittercowboy/cook/releases/tag/v1.5.0
+[1.4.29]: https://github.com/glittercowboy/cook/releases/tag/v1.4.29
+[1.4.28]: https://github.com/glittercowboy/cook/releases/tag/v1.4.28
+[1.4.27]: https://github.com/glittercowboy/cook/releases/tag/v1.4.27
+[1.4.26]: https://github.com/glittercowboy/cook/releases/tag/v1.4.26
+[1.4.25]: https://github.com/glittercowboy/cook/releases/tag/v1.4.25
+[1.4.24]: https://github.com/glittercowboy/cook/releases/tag/v1.4.24
+[1.4.23]: https://github.com/glittercowboy/cook/releases/tag/v1.4.23
+[1.4.22]: https://github.com/glittercowboy/cook/releases/tag/v1.4.22
+[1.4.21]: https://github.com/glittercowboy/cook/releases/tag/v1.4.21
+[1.4.20]: https://github.com/glittercowboy/cook/releases/tag/v1.4.20
+[1.4.19]: https://github.com/glittercowboy/cook/releases/tag/v1.4.19
+[1.4.18]: https://github.com/glittercowboy/cook/releases/tag/v1.4.18
+[1.4.17]: https://github.com/glittercowboy/cook/releases/tag/v1.4.17
+[1.4.16]: https://github.com/glittercowboy/cook/releases/tag/v1.4.16
+[1.4.15]: https://github.com/glittercowboy/cook/releases/tag/v1.4.15
+[1.4.14]: https://github.com/glittercowboy/cook/releases/tag/v1.4.14
+[1.4.13]: https://github.com/glittercowboy/cook/releases/tag/v1.4.13
+[1.4.12]: https://github.com/glittercowboy/cook/releases/tag/v1.4.12
+[1.4.11]: https://github.com/glittercowboy/cook/releases/tag/v1.4.11
+[1.4.10]: https://github.com/glittercowboy/cook/releases/tag/v1.4.10
+[1.4.9]: https://github.com/glittercowboy/cook/releases/tag/v1.4.9
+[1.4.8]: https://github.com/glittercowboy/cook/releases/tag/v1.4.8
+[1.4.7]: https://github.com/glittercowboy/cook/releases/tag/v1.4.7
+[1.4.6]: https://github.com/glittercowboy/cook/releases/tag/v1.4.6
+[1.4.5]: https://github.com/glittercowboy/cook/releases/tag/v1.4.5
+[1.4.4]: https://github.com/glittercowboy/cook/releases/tag/v1.4.4
+[1.4.3]: https://github.com/glittercowboy/cook/releases/tag/v1.4.3
+[1.4.2]: https://github.com/glittercowboy/cook/releases/tag/v1.4.2
+[1.4.1]: https://github.com/glittercowboy/cook/releases/tag/v1.4.1
+[1.4.0]: https://github.com/glittercowboy/cook/releases/tag/v1.4.0
+[1.3.34]: https://github.com/glittercowboy/cook/releases/tag/v1.3.34
+[1.3.33]: https://github.com/glittercowboy/cook/releases/tag/v1.3.33
+[1.3.32]: https://github.com/glittercowboy/cook/releases/tag/v1.3.32
+[1.3.31]: https://github.com/glittercowboy/cook/releases/tag/v1.3.31
+[1.3.30]: https://github.com/glittercowboy/cook/releases/tag/v1.3.30
+[1.3.29]: https://github.com/glittercowboy/cook/releases/tag/v1.3.29
+[1.3.28]: https://github.com/glittercowboy/cook/releases/tag/v1.3.28
+[1.3.27]: https://github.com/glittercowboy/cook/releases/tag/v1.3.27
+[1.3.26]: https://github.com/glittercowboy/cook/releases/tag/v1.3.26
+[1.3.25]: https://github.com/glittercowboy/cook/releases/tag/v1.3.25
+[1.3.24]: https://github.com/glittercowboy/cook/releases/tag/v1.3.24
+[1.3.23]: https://github.com/glittercowboy/cook/releases/tag/v1.3.23
+[1.3.22]: https://github.com/glittercowboy/cook/releases/tag/v1.3.22
+[1.3.21]: https://github.com/glittercowboy/cook/releases/tag/v1.3.21
+[1.3.20]: https://github.com/glittercowboy/cook/releases/tag/v1.3.20
+[1.3.19]: https://github.com/glittercowboy/cook/releases/tag/v1.3.19
+[1.3.18]: https://github.com/glittercowboy/cook/releases/tag/v1.3.18
+[1.3.17]: https://github.com/glittercowboy/cook/releases/tag/v1.3.17
+[1.3.16]: https://github.com/glittercowboy/cook/releases/tag/v1.3.16
+[1.3.15]: https://github.com/glittercowboy/cook/releases/tag/v1.3.15
+[1.3.14]: https://github.com/glittercowboy/cook/releases/tag/v1.3.14
+[1.3.13]: https://github.com/glittercowboy/cook/releases/tag/v1.3.13
+[1.3.12]: https://github.com/glittercowboy/cook/releases/tag/v1.3.12
+[1.3.11]: https://github.com/glittercowboy/cook/releases/tag/v1.3.11
+[1.3.10]: https://github.com/glittercowboy/cook/releases/tag/v1.3.10
+[1.3.9]: https://github.com/glittercowboy/cook/releases/tag/v1.3.9
+[1.3.8]: https://github.com/glittercowboy/cook/releases/tag/v1.3.8
+[1.3.7]: https://github.com/glittercowboy/cook/releases/tag/v1.3.7
+[1.3.6]: https://github.com/glittercowboy/cook/releases/tag/v1.3.6
+[1.3.5]: https://github.com/glittercowboy/cook/releases/tag/v1.3.5
+[1.3.4]: https://github.com/glittercowboy/cook/releases/tag/v1.3.4
+[1.3.3]: https://github.com/glittercowboy/cook/releases/tag/v1.3.3
+[1.3.2]: https://github.com/glittercowboy/cook/releases/tag/v1.3.2
+[1.3.1]: https://github.com/glittercowboy/cook/releases/tag/v1.3.1
+[1.3.0]: https://github.com/glittercowboy/cook/releases/tag/v1.3.0
+[1.2.13]: https://github.com/glittercowboy/cook/releases/tag/v1.2.13
+[1.2.12]: https://github.com/glittercowboy/cook/releases/tag/v1.2.12
+[1.2.11]: https://github.com/glittercowboy/cook/releases/tag/v1.2.11
+[1.2.10]: https://github.com/glittercowboy/cook/releases/tag/v1.2.10
+[1.2.9]: https://github.com/glittercowboy/cook/releases/tag/v1.2.9
+[1.2.8]: https://github.com/glittercowboy/cook/releases/tag/v1.2.8
+[1.2.7]: https://github.com/glittercowboy/cook/releases/tag/v1.2.7
+[1.2.6]: https://github.com/glittercowboy/cook/releases/tag/v1.2.6
+[1.2.5]: https://github.com/glittercowboy/cook/releases/tag/v1.2.5
+[1.2.4]: https://github.com/glittercowboy/cook/releases/tag/v1.2.4
+[1.2.3]: https://github.com/glittercowboy/cook/releases/tag/v1.2.3
+[1.2.2]: https://github.com/glittercowboy/cook/releases/tag/v1.2.2
+[1.2.1]: https://github.com/glittercowboy/cook/releases/tag/v1.2.1
+[1.2.0]: https://github.com/glittercowboy/cook/releases/tag/v1.2.0
+[1.1.2]: https://github.com/glittercowboy/cook/releases/tag/v1.1.2
+[1.1.1]: https://github.com/glittercowboy/cook/releases/tag/v1.1.1
+[1.1.0]: https://github.com/glittercowboy/cook/releases/tag/v1.1.0
+[1.0.11]: https://github.com/glittercowboy/cook/releases/tag/v1.0.11
+[1.0.10]: https://github.com/glittercowboy/cook/releases/tag/v1.0.10
+[1.0.9]: https://github.com/glittercowboy/cook/releases/tag/v1.0.9
+[1.0.8]: https://github.com/glittercowboy/cook/releases/tag/v1.0.8
+[1.0.7]: https://github.com/glittercowboy/cook/releases/tag/v1.0.7
+[1.0.6]: https://github.com/glittercowboy/cook/releases/tag/v1.0.6
+[1.0.5]: https://github.com/glittercowboy/cook/releases/tag/v1.0.5
+[1.0.4]: https://github.com/glittercowboy/cook/releases/tag/v1.0.4
+[1.0.3]: https://github.com/glittercowboy/cook/releases/tag/v1.0.3
+[1.0.2]: https://github.com/glittercowboy/cook/releases/tag/v1.0.2
+[1.0.1]: https://github.com/glittercowboy/cook/releases/tag/v1.0.1
+[1.0.0]: https://github.com/glittercowboy/cook/releases/tag/v1.0.0

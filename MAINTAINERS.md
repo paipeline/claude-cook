@@ -1,4 +1,4 @@
-# GSD Maintainer Guide
+# COOK Maintainer Guide
 
 Quick reference for release workflows and maintenance tasks.
 
@@ -7,7 +7,7 @@ Quick reference for release workflows and maintenance tasks.
 ### Standard Release
 
 ```bash
-/gsd-publish-version
+/cook-publish-version
 ```
 
 The command walks you through:
@@ -73,7 +73,7 @@ Follow [Keep a Changelog](https://keepachangelog.com/):
 ## [1.10.0] - 2025-01-22
 
 ### Added
-- New `/gsd:whats-new` command
+- New `/cook:whats-new` command
 
 ### Changed
 - Improved parallel execution
