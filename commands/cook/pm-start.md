@@ -1,7 +1,7 @@
 ---
 name: cook:pm-start
 description: Start fully autonomous PM — plans, syncs, dispatches, monitors, and advances phases automatically
-argument-hint: "<phase> [--manual] [--executor=CLAUDE_CODE] [--skip-plan] [--max-iterations=0] [--max-replans=3] [--calls=0]"
+argument-hint: "<phase> [--manual] [--background] [--executor=CLAUDE_CODE] [--skip-plan] [--max-iterations=0] [--max-replans=3] [--calls=0]"
 agent: cook-pm
 allowed-tools:
   - Read
@@ -38,7 +38,7 @@ Phase number: $ARGUMENTS (required — starting phase)
 
 **Flags:**
 - `--manual` — Don't launch the loop, manage manually with `/cook:pm-cycle`
-- `--background` — Run loop detached (default: foreground with live output)
+- `--background` — Run loop detached (default: background when autonomous)
 - `--executor=X` — Override default executor (CLAUDE_CODE, CURSOR_AGENT, CODEX, etc.)
 - `--skip-plan` — Skip initial planning, assume plans already exist
 - `--max-iterations=N` — Safety cap on loop cycles (default: 0 = unlimited)
@@ -176,53 +176,35 @@ Present:
 | ...    | ...  | ...      | launched |
 ```
 
-## 7. Launch PM Loop (default: foreground, live output)
+## 7. Launch PM Loop (default: background in autonomous mode)
 
-### Autonomous Mode (default) — FOREGROUND
+### Autonomous Mode (default) — BACKGROUND
 
-Launch pm-loop.sh in the **foreground** — the user sees live progress, cycle-by-cycle output, progress bars, and desktop notifications for key events. The PM actively reports what it's doing. The loop will automatically trigger `/cook:pm-replan` after repeated failures, up to the configured max.
-
-```bash
-~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations}
-```
-
-The loop runs in the current terminal. The user sees:
-- Cycle headers with timestamps
-- Full pm-cycle output (banners, ticket tables, decisions)
-- Progress bars between cycles (done/running/todo counts)
-- Countdown to next cycle
-- Desktop notifications for: milestone complete, errors, phase advances
-
-Stop with: `Ctrl+C` | `touch .planning/.pm-stop` | `/cook:pm-stop`
-
-**Note:** This is a blocking call — it takes over the terminal. The PM actively reports to the user rather than hiding in a log file.
-
-### Background Mode (--background)
-
-If the user explicitly passes `--background`, launch detached:
+Launch pm-loop.sh in the **background** by default in autonomous mode. This avoids blocking the command while keeping the loop running. The loop will automatically trigger `/cook:pm-replan` after repeated failures, up to the configured max.
 
 ```bash
 ~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations} --background
 ```
 
-This re-execs with nohup and exits immediately. Output goes to `.planning/pm-loop.log`.
+Output goes to `.planning/pm-loop.log`. Desktop notifications still work in background mode (macOS/Linux).
 
-Desktop notifications still work in background mode (macOS/Linux).
+Stop with: `touch .planning/.pm-stop` | `/cook:pm-stop`
 
-Present:
+If the user explicitly asks for foreground mode, run without `--background`.
+
+### Foreground Mode (explicit)
+
+If the user explicitly asks for foreground/live output, launch without `--background`:
+
+```bash
+~/.claude/scripts/pm-loop.sh --phase={X} --interval={poll_interval} --max-iterations={max_iterations}
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► BACKGROUND MODE
 
-PM loop running (PID: {pid})
-Log: tail -f .planning/pm-loop.log
-Stop: /cook:pm-stop  or  touch .planning/.pm-stop
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+This blocks the terminal and streams live output.
 
-### Manual Mode (--manual)
+### Manual Mode (--manual only)
 
-Don't launch the loop. User runs `/cook:pm-cycle` manually for each step.
+Only use manual mode if the user explicitly passes `--manual`. Otherwise always launch the loop.
 
 Present:
 ```

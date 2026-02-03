@@ -61,6 +61,14 @@ Claude degrades when it perceives context pressure and enters "completion mode."
 
 **Aggressive atomicity:** More plans, smaller scope, consistent quality. Each plan: 2-3 tasks max.
 
+
+## PRD Slicing Rule
+
+Every PLAN.md must represent **one PRD slice** (one user-facing capability).
+- If a phase requirement includes multiple capabilities or flows, split into multiple PLAN.md files.
+- Aim for 1-2 acceptance criteria per plan; avoid bundled mega-plans.
+- The resulting plan should fit in a single, focused ticket.
+
 ## Ship Fast
 
 No enterprise process. No approval gates.

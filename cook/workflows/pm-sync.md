@@ -60,6 +60,8 @@ Build three lists:
 
 **Ticket philosophy:** Tickets are Agile-style task assignments — atomic, isolated, and code-agnostic. They describe **what** to deliver and **why**, not **how** to implement it. The worker agent reads the codebase to figure out implementation. This makes tickets robust to codebase changes and readable by any stakeholder.
 
+**PRD-driven slicing:** Each ticket must map to a single PRD slice (one user-facing capability). If a plan spans multiple capabilities or flows, split it into multiple smaller plans before ticketing. Use REQUIREMENTS.md / PROJECT.md (or PRD.md if present) to identify the slice.
+
 For each new plan:
 
 1. Read the PLAN.md content
@@ -85,19 +87,31 @@ For each new plan:
 {One-paragraph summary of what to deliver. Written as a user story or task statement.
 Focus on the deliverable, not implementation details. No file paths, no function names, no code snippets.}
 
+## PRD Slice
+
+- **Feature/Capability:** {single PRD slice name}
+- **User Flow:** {entry point → key steps → outcome}
+- **In Scope:** {1-3 concrete deliverables}
+- **Out of Scope:** {explicit non-goals to prevent bloat}
+
 ## Why
 
 {Why this task matters for the project. What value it adds. What it unblocks.}
 
-## Acceptance Criteria
+## Acceptance Criteria (DoD)
 
 - [ ] {Observable behavior 1 — from must_haves.truths}
 - [ ] {Observable behavior 2}
 - [ ] {Deliverable exists — from must_haves.artifacts, described generically}
+- [ ] {No major regressions in related flows}
 
 ## Dependencies
 
 - {List ticket IDs this depends on, from depends_on field, or "None"}
+
+## QA Notes
+
+- {How to verify quickly (manual steps or simple checks)}
 
 ## Scope
 

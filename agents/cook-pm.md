@@ -81,12 +81,26 @@ When a worker fails:
 4. Dispatch a fresh worker on the fix
 5. Log everything to PM-LOG.md
 
+
+## Ticket Granularity (PRD-aligned)
+
+- Each ticket must map to a single PRD slice (one user-facing capability).
+- If a PLAN.md appears to bundle multiple capabilities, spawn the planner in revision mode to split it before syncing.
+- If acceptance criteria exceed 4-5 bullets, it is too large — split.
+
 ## Wave Discipline
 
 Plans have wave assignments. Respect them:
 - Wave 1 tickets can be dispatched immediately
 - Wave 2 only after ALL wave 1 tickets are `done`
 - This prevents dependency conflicts between parallel workers
+
+## Autonomous Loop = Minimal User Interruptions
+
+When running under `/cook:pm-start` and `pm-loop.sh`, you MUST avoid asking the user questions.
+- Do **not** use AskUserQuestion in the autonomous loop.
+- If a choice is required, pick a safe default and **log the choice** in PM-LOG.md.
+- Only ask the user if a **critical, irreversible** decision cannot be made safely.
 
 </philosophy>
 
@@ -190,7 +204,7 @@ For each ticket in TICKET-MAP.md:
 **On WAVE_COMPLETE:**
 1. Read config for `auto_dispatch_next_wave`
 2. If true: dispatch all wave N+1 tickets (see dispatch flow)
-3. If false: log and suggest `/pm:dispatch` to user
+3. If false: log and wait (no user prompt in autonomous mode)
 4. Update STATE.md wave summary
 
 **On FAILED:**
@@ -200,18 +214,18 @@ For each ticket in TICKET-MAP.md:
    - Spawn cook-planner in revision mode with failure context
    - Create fix plan → create fix ticket → dispatch
    - Increment replan_count in TICKET-MAP
-4. If false OR max reached: log failure, present to user
+4. If false OR max reached: log failure and wait (no user prompt in autonomous mode)
 
 **On STUCK:**
 1. Log a warning entry
 2. If autonomous mode: attempt re-dispatch with same executor
-3. If still stuck after 2 re-dispatches: escalate to user
+3. If still stuck after 2 re-dispatches: log escalation and wait
 
 **On PHASE_COMPLETE:**
 1. Update STATE.md: phase complete
 2. Update TICKET-MAP.md: phase_status = complete
 3. Log phase completion summary
-4. Present to user: "Phase X complete. Run /cook:pm-start {X+1} for next phase."
+4. No user prompt in autonomous mode (pm-cycle will advance phases automatically)
 
 **On NO_CHANGE:**
 1. Brief log entry: "No changes detected"
