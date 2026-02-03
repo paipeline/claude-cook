@@ -199,6 +199,24 @@ print_progress() {
   fi
 }
 
+# Check if all tickets are done (returns 0 if all done, 1 otherwise)
+all_tickets_done() {
+  local ticket_map=""
+  ticket_map=$(find .planning/phases/ -name "TICKET-MAP.md" -print -quit 2>/dev/null || true)
+
+  if [ -n "$ticket_map" ] && [ -f "$ticket_map" ]; then
+    local done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null || echo "0")
+    local inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null || echo "0")
+    local todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null || echo "0")
+    local total=$((done_count + inprogress_count + todo_count))
+
+    if [ "$total" -gt 0 ] && [ "$inprogress_count" -eq 0 ] && [ "$todo_count" -eq 0 ]; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
 # ─── Graceful Ctrl+C handling ────────────────────────────────────
 
 cleanup() {
@@ -479,6 +497,27 @@ while true; do
       REPLAN_ATTEMPTS=0
       update_status "running" "completed_cycle" "$(cat "$CALL_COUNT_FILE" 2>/dev/null || echo 0)"
       print_progress
+
+      # Exit if all tickets are done
+      if all_tickets_done; then
+        TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo " PM ► ALL TICKETS DONE"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "  All tickets complete after $CYCLE cycles."
+        echo ""
+        echo "" >> "$LOG_FILE"
+        echo "## [$TIMESTAMP] LOOP_EXIT" >> "$LOG_FILE"
+        echo "" >> "$LOG_FILE"
+        echo "- All tickets done after $CYCLE cycles" >> "$LOG_FILE"
+        update_status "completed" "all_tickets_done" "$(cat "$CALL_COUNT_FILE" 2>/dev/null || echo 0)"
+        rm -f "$PID_FILE"
+        notify "COOK PM" "All tickets done! Phase complete after $CYCLE cycles."
+        exit 0
+      fi
+
       echo ""
       echo "  Cycle #$CYCLE completed in ${CYCLE_DURATION}s. Next in ${INTERVAL}s..."
       echo ""
