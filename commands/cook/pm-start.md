@@ -138,28 +138,44 @@ Follow the action for the detected state as defined in `pm-cycle.md`:
 - NEEDS_DISPATCH → dispatch workers
 - MONITORING → poll and react
 
-## 5. Launch PM Loop
+## 5. Launch PM Loop (MANDATORY)
 
-### Autonomous Mode (default) — BACKGROUND
+**You MUST launch pm-loop.sh unless `--manual` flag is explicitly set.** This is not optional. The loop is what makes the PM autonomous — without it, the PM does one cycle and stops.
 
-Build the pm-loop.sh command with all detected parameters:
+**If `--manual` is NOT set**, run this command via Bash tool immediately after the first cycle completes:
 
 ```bash
-~/.claude/scripts/pm-loop.sh \
+nohup ~/.claude/scripts/pm-loop.sh \
   --phase={X} \
   --interval={poll_interval} \
   --max-iterations={max_iterations} \
   --background \
-  ${prd_flag}
+  ${init_flag} \
+  ${prd_flag} \
+  > /dev/null 2>&1 &
 ```
 
-Where `${prd_flag}` is `--prd=<file>` if provided.
+Where:
+- `${init_flag}` is `--init` if the `--init` flag was provided
+- `${prd_flag}` is `--prd=<file>` if provided
+- Phase is auto-detected or from arguments
+
+After launching, confirm to user:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PM ► LOOP STARTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PM loop running in background (PID: {pid})
+Polling every {interval}s
+
+Stop with: /cook:pm-stop
+Status:    /cook:pm-status
+```
 
 Stop with: `touch .planning/.pm-stop` | `/cook:pm-stop`
 
-### Manual Mode (--manual)
-
-Present:
+**If `--manual` IS set**, do NOT launch the loop. Present:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  PM ► MANUAL MODE

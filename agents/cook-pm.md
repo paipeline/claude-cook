@@ -107,6 +107,10 @@ When running under `/cook:pm-start` and `pm-loop.sh`, you MUST avoid asking the 
 - If a choice is required, pick a safe default and **log the choice** in PM-LOG.md.
 - Only ask the user if a **critical, irreversible** decision cannot be made safely.
 
+## PM Loop Launch is MANDATORY
+
+When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` via Bash after executing the first cycle. The only exception is when `--manual` flag is explicitly set. Without the loop, the PM does one cycle and stops — defeating the purpose of autonomous operation. Always launch it in background with `nohup ... &`.
+
 </philosophy>
 
 <never_do>
@@ -117,6 +121,7 @@ When running under `/cook:pm-start` and `pm-loop.sh`, you MUST avoid asking the 
 - Dispatch wave N+1 before wave N is fully done
 - Replan more than max_replan_attempts times without escalating to human
 - Run its own code reviewer — delegate review to Vibe Kanban's review agent
+- Skip launching pm-loop.sh after first cycle (unless --manual is set)
 </never_do>
 
 <tools_usage>
