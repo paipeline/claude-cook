@@ -142,19 +142,22 @@ Follow the action for the detected state as defined in `pm-cycle.md`:
 
 **You MUST launch pm-loop.sh unless `--manual` flag is explicitly set.** This is not optional. The loop is what makes the PM autonomous — without it, the PM does one cycle and stops.
 
-**If `--manual` is NOT set**, run this command via Bash tool immediately after the first cycle completes:
+**If `--manual` is NOT set**, launch pm-loop.sh using the Bash tool with `run_in_background=true` immediately after the first cycle completes:
 
 ```bash
 ~/.claude/scripts/pm-loop.sh \
   --phase={X} \
   --interval={poll_interval} \
   --max-iterations={max_iterations} \
-  --background \
   ${init_flag} \
   ${prd_flag}
 ```
 
-**IMPORTANT:** Do NOT wrap this in `nohup` or append `&`. The `--background` flag makes `pm-loop.sh` handle its own detaching internally (via `setsid` or `nohup+disown`). The script prints the PID, writes the pid file, and exits immediately — the loop continues in a fully detached process.
+**IMPORTANT:**
+- Use the Bash tool with `run_in_background=true` — this runs in Claude Code's background compute so the user sees live progress in the UI.
+- Do NOT use `--background` flag, `nohup`, or `&`. Let Claude Code manage the background process.
+- Do NOT use `timeout` on the Bash tool — the loop runs indefinitely until milestone complete or `.pm-stop`.
+- The loop runs in foreground mode within the background task, showing live progress bars and status updates.
 
 Where:
 - `${init_flag}` is `--init` if the `--init` flag was provided
@@ -164,11 +167,11 @@ Where:
 After launching, confirm to user:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- PM ► LOOP STARTED
+ PM ► LOOP STARTED (background compute)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-PM loop running in background (PID: {pid})
-Polling every {interval}s
+PM loop running in background compute.
+Polling every {interval}s. Progress visible in Claude Code UI.
 
 Stop with: /cook:pm-stop
 Status:    /cook:pm-status
