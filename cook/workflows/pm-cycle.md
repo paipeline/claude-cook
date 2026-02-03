@@ -13,6 +13,7 @@ NEEDS_PLANNING    → No PLAN.md files
 NEEDS_SYNC        → Plans exist, no TICKET-MAP.md
 NEEDS_DISPATCH    → TICKET-MAP has todo tickets in ready wave
 MONITORING        → Tickets inprogress
+NEEDS_REVIEW      → Tickets inreview (awaiting code review)
 PHASE_COMPLETE    → All tickets done, more phases in roadmap
 MILESTONE_COMPLETE → All tickets done, last phase in roadmap
 ```
@@ -24,9 +25,12 @@ NEEDS_PLANNING ──spawn planner──→ NEEDS_SYNC
 NEEDS_SYNC ──create tickets──→ NEEDS_DISPATCH
 NEEDS_DISPATCH ──launch workers──→ MONITORING
 MONITORING ──poll + react──→ MONITORING (loop)
+                          ──→ NEEDS_REVIEW (worker completed, tickets inreview)
                           ──→ NEEDS_DISPATCH (wave complete, next wave ready)
                           ──→ PHASE_COMPLETE (all done)
                           ──→ MONITORING + replan (ticket failed)
+NEEDS_REVIEW ──code review──→ MONITORING (review passed → done, check wave)
+                            ──→ MONITORING (review failed → re-dispatch)
 PHASE_COMPLETE ──advance phase──→ NEEDS_PLANNING (next phase)
                               ──→ MILESTONE_COMPLETE (last phase)
 MILESTONE_COMPLETE ──stop signal──→ EXIT
@@ -92,16 +96,41 @@ Follow `pm-check.md` workflow:
 | Event | Reaction |
 |-------|----------|
 | Ticket: todo → inprogress | Update TICKET-MAP (worker started) |
-| Ticket: inprogress → done | Update TICKET-MAP, check wave completion |
-| Ticket: inprogress → inreview | Update TICKET-MAP (awaiting review) |
+| Ticket: inprogress → inreview | Update TICKET-MAP, transition to NEEDS_REVIEW |
+| Ticket: inprogress → done | Update TICKET-MAP (review skipped), check wave completion |
 | Ticket: any → cancelled | If auto_replan: run pm-replan (TARGETED). Else: log warning |
 | Wave complete | If auto_dispatch_next_wave: dispatch next wave. Else: log |
 | All tickets done | Mark as PHASE_COMPLETE (caught next cycle) |
-| No changes | Log: "No changes. {N} inprogress, {M} todo." |
+| No changes | Log: "No changes. {N} inprogress, {M} inreview, {O} todo." |
 
 4. Update TICKET-MAP.md + STATE.md + PM-LOG.md
 
 **Stuck detection:** If a ticket has been `inprogress` for longer than 30 minutes (configurable), log a warning. After 60 minutes, consider re-dispatching with a different executor.
+
+### NEEDS_REVIEW
+
+**Goal:** Run automated code review on tickets that workers have completed.
+
+1. Find all tickets with status `inreview` in TICKET-MAP.md
+2. For each `inreview` ticket:
+   a. Read ticket details via `mcp__vibe_kanban__get_task(task_id)`
+   b. Spawn `feature-dev:code-reviewer` agent via Task tool:
+      - Provide: ticket title, acceptance criteria, recent git commits
+      - Reviewer examines the diff for bugs, security issues, and code quality
+   c. Based on review verdict:
+      - **PASS:** Update ticket → `done` via `mcp__vibe_kanban__update_task(task_id, status="done")`. Update TICKET-MAP: status=done, review=passed.
+      - **FAIL:** Update ticket → `inprogress` via `mcp__vibe_kanban__update_task(task_id, status="inprogress")`. Append review feedback to ticket description. Re-dispatch worker to address feedback.
+3. After all reviews processed:
+   - Check wave completion (all done → dispatch next wave or PHASE_COMPLETE)
+4. Log review results to PM-LOG.md:
+   ```markdown
+   ## [{timestamp}] CODE_REVIEW
+
+   - Reviewed {N} tickets
+   - Passed: {list}
+   - Failed: {list with issue summaries}
+   - Actions: {re-dispatched / wave advanced / etc.}
+   ```
 
 ### PHASE_COMPLETE
 

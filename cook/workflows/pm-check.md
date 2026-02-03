@@ -97,6 +97,7 @@ Aggregate events:
 | --------- | --------------- |
 | All wave N tickets are `done` | WAVE_COMPLETE |
 | All tickets across all waves are `done` | PHASE_COMPLETE |
+| Tickets in `inreview` awaiting review | NEEDS_REVIEW |
 | No changes detected | NO_CHANGE |
 
 </step>
@@ -129,10 +130,24 @@ Run /cook:pm-start {X+1} to begin next phase.
 4. If false: log and present suggestion to user
 5. Update STATE.md wave summary
 
-### WORKER_COMPLETED / WORKER_AUTO_COMPLETED
+### WORKER_COMPLETED (inprogress → inreview)
 1. Call `get_task(task_id)` to read worker output/notes
-2. Update TICKET-MAP.md: status=done, completed=timestamp
+2. Update TICKET-MAP.md: status=inreview, review_started=timestamp
+3. Trigger automated code review:
+   - Spawn `feature-dev:code-reviewer` agent via Task tool
+   - Provide: ticket title, acceptance criteria from ticket description, recent commits (use `git log --oneline -10` to find relevant commits)
+   - The reviewer examines the diff and returns a verdict: **PASS** or **FAIL** with issues
+4. Based on review result:
+   - **PASS:** Update ticket status to `done` via `mcp__vibe_kanban__update_task(task_id, status="done")`. Update TICKET-MAP.md: status=done, completed=timestamp, review=passed. Check if this completes the wave.
+   - **FAIL:** Update ticket status back to `inprogress` via `mcp__vibe_kanban__update_task(task_id, status="inprogress")`. Update TICKET-MAP.md: status=inprogress, review=failed. Append review feedback as a task note via `mcp__vibe_kanban__update_task(task_id, description=original_description + "\n\n## Review Feedback\n\n" + reviewer_issues)`. Re-dispatch the ticket so the worker can address review feedback.
+5. Log review result to PM-LOG.md
+
+### WORKER_AUTO_COMPLETED (inprogress → done, bypass review)
+1. Call `get_task(task_id)` to read worker output/notes
+2. Update TICKET-MAP.md: status=done, completed=timestamp, review=skipped
 3. Check if this completes the wave
+
+> **Note:** `inprogress → done` skips review (worker or human marked it done directly). To enforce review, workers should transition to `inreview` instead of `done`.
 
 ### TICKET_CANCELLED (potential failure)
 1. Call `get_task(task_id)` to read cancellation reason

@@ -176,10 +176,10 @@ Update the Wave Summary table:
 ```markdown
 ## Wave Summary
 
-| Wave | Total | Done | In Progress | Todo | Failed |
-| ---- | ----- | ---- | ----------- | ---- | ------ |
-| 1    | 3     | 0    | 0           | 3    | 0      |
-| 2    | 2     | 0    | 0           | 2    | 0      |
+| Wave | Total | Done | In Review | In Progress | Todo | Failed |
+| ---- | ----- | ---- | --------- | ----------- | ---- | ------ |
+| 1    | 3     | 0    | 0         | 0           | 3    | 0      |
+| 2    | 2     | 0    | 0         | 0           | 2    | 0      |
 ```
 
 Update `last_polled` timestamp.

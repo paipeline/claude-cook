@@ -174,12 +174,13 @@ print_progress() {
 
   if [ -n "$ticket_map" ] && [ -f "$ticket_map" ]; then
     local done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null || echo "0")
+    local inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null || echo "0")
     local inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null || echo "0")
     local todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null || echo "0")
-    local total=$((done_count + inprogress_count + todo_count))
+    local total=$((done_count + inreview_count + inprogress_count + todo_count))
 
     if [ "$total" -gt 0 ]; then
-      # Build progress bar
+      # Build progress bar (done + inreview count toward completion)
       local pct=0
       if [ "$total" -gt 0 ]; then
         pct=$((done_count * 100 / total))
@@ -191,10 +192,14 @@ print_progress() {
       for ((i=0; i<filled; i++)); do bar+="█"; done
       for ((i=0; i<empty; i++)); do bar+="░"; done
 
-      echo "  ┌─────────────────────────────────────────┐"
+      echo "  ┌──────────────────────────────────────────────────────┐"
       echo "  │  Progress: [$bar] ${pct}%"
-      echo "  │  Done: $done_count  Running: $inprogress_count  Todo: $todo_count  Total: $total"
-      echo "  └─────────────────────────────────────────┘"
+      if [ "$inreview_count" -gt 0 ]; then
+        echo "  │  Done: $done_count  Review: $inreview_count  Running: $inprogress_count  Todo: $todo_count"
+      else
+        echo "  │  Done: $done_count  Running: $inprogress_count  Todo: $todo_count  Total: $total"
+      fi
+      echo "  └──────────────────────────────────────────────────────┘"
     fi
   fi
 }
@@ -206,11 +211,12 @@ all_tickets_done() {
 
   if [ -n "$ticket_map" ] && [ -f "$ticket_map" ]; then
     local done_count=$(grep -c "| done " "$ticket_map" 2>/dev/null || echo "0")
+    local inreview_count=$(grep -c "| inreview " "$ticket_map" 2>/dev/null || echo "0")
     local inprogress_count=$(grep -c "| inprogress " "$ticket_map" 2>/dev/null || echo "0")
     local todo_count=$(grep -c "| todo " "$ticket_map" 2>/dev/null || echo "0")
-    local total=$((done_count + inprogress_count + todo_count))
+    local total=$((done_count + inreview_count + inprogress_count + todo_count))
 
-    if [ "$total" -gt 0 ] && [ "$inprogress_count" -eq 0 ] && [ "$todo_count" -eq 0 ]; then
+    if [ "$total" -gt 0 ] && [ "$inreview_count" -eq 0 ] && [ "$inprogress_count" -eq 0 ] && [ "$todo_count" -eq 0 ]; then
       return 0
     fi
   fi
