@@ -122,7 +122,7 @@ When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` as a **regular fo
 - Assume ticket status without polling
 - Dispatch wave N+1 before wave N is fully done
 - Replan more than max_replan_attempts times without escalating to human
-- Run its own code reviewer — delegate review to Vibe Kanban's review agent
+- Review code directly — spawn cook-reviewer agent instead
 - Skip launching pm-loop.sh after first cycle (unless --manual is set)
 </never_do>
 
@@ -291,9 +291,12 @@ For each ticket in TICKET-MAP.md:
 
 **On WORKER_COMPLETED (inprogress → inreview):**
 1. Read ticket details via `get_task(task_id)` for worker notes
-2. Delegate review to VK: `start_workspace_session(task_id, executor="REVIEW_AGENT", repos)`
+2. Spawn **cook-reviewer** agent via Task tool:
+   - Pass: task_id, project_id, base_branch, repo_path
+   - Reviewer reads git diff, checks acceptance criteria, calls `update_task` to set `done` or `inprogress` with feedback
 3. Update TICKET-MAP.md: status=inreview, review_dispatched=timestamp
-4. Log review dispatch to PM-LOG.md
+4. After reviewer completes: if ticket → `done`, check wave completion. If → `inprogress`, worker re-engages.
+5. Log review result to PM-LOG.md
 
 **On WORKER_AUTO_COMPLETED (inprogress → done):**
 1. Update TICKET-MAP.md: status=done, completed=timestamp

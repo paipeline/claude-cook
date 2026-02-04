@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-02-04
+
+### Added
+- **cook-reviewer** agent — reviews worker code against acceptance criteria via git diff
+- PM spawns cook-reviewer when tickets hit `inreview` instead of non-existent VK REVIEW_AGENT
+- Reviewer approves (→ done) or rejects with actionable feedback (→ inprogress)
+
+### Changed
+- NEEDS_REVIEW state now uses cook-reviewer agent instead of VK executor dispatch
+- PM never_do updated: "spawn cook-reviewer" replaces "delegate to VK review agent"
+
+### Removed
+- Dependency on non-existent `REVIEW_AGENT` VK executor
+
 ## [1.11.11] - 2026-02-04
 
 ### Changed

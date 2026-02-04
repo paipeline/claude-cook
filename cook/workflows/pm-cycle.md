@@ -173,28 +173,26 @@ Follow `pm-check.md` workflow:
 
 ### NEEDS_REVIEW
 
-**Goal:** Delegate code review to Vibe Kanban's review agent.
-
-The PM does **not** run its own code reviewer. Instead, it delegates review to the Vibe Kanban platform's review capabilities:
+**Goal:** Review worker output against acceptance criteria via cook-reviewer agent.
 
 1. Find all tickets with status `inreview` in TICKET-MAP.md
 2. For each `inreview` ticket:
-   a. Read ticket details via `mcp__vibe_kanban__get_task(task_id)`
-   b. Dispatch review via Vibe Kanban:
-      - Call `mcp__vibe_kanban__start_workspace_session(task_id, executor="REVIEW_AGENT", repos=[...])`
-      - This launches VK's review agent on the worker's changes
-   c. Update TICKET-MAP: review_dispatched=timestamp
-3. After dispatching reviews, transition back to MONITORING:
-   - PM polls `list_tasks()` to detect review outcomes
-   - When VK review agent completes: ticket → `done` (passed) or → `inprogress` (failed with feedback)
+   a. Spawn **cook-reviewer** agent via Task tool:
+      - Pass: task_id, project_id, base_branch, repo_path
+      - Reviewer reads git diff, checks acceptance criteria, decides pass/fail
+      - Reviewer calls `update_task` directly: `done` (pass) or `inprogress` with feedback (fail)
+   b. Update TICKET-MAP: review_dispatched=timestamp
+3. After reviewer completes:
+   - If ticket → `done`: check if this completes the wave
+   - If ticket → `inprogress`: worker re-engages with feedback appended to ticket description
    - PM reacts to these transitions in the normal MONITORING flow
-4. Log review dispatch to PM-LOG.md:
+4. Log review result to PM-LOG.md:
    ```markdown
-   ## [{timestamp}] REVIEW_DISPATCH
+   ## [{timestamp}] REVIEW
 
-   - Dispatched VK review for {N} tickets
-   - Tickets: {list}
-   - Next: Monitoring for review outcomes
+   - Reviewed {N} tickets
+   - Passed: {list}
+   - Failed: {list with reasons}
    ```
 
 ### PHASE_COMPLETE
