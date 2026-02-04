@@ -7,23 +7,25 @@ allowed-tools:
   - Write
   - Task
   - AskUserQuestion
+  - mcp__vibe_kanban__*
 ---
 
 <objective>
 
-Initialize a new project through unified flow: questioning → research (optional) → requirements → roadmap.
+Initialize a new project through unified flow: questioning → research (optional) → requirements → roadmap → (autonomous: auto-launch PM).
 
-This is the most leveraged moment in any project. Deep questioning here means better plans, better execution, better outcomes. One command takes you from idea to ready-for-planning.
+This is the most leveraged moment in any project. Deep questioning here means better tickets, better execution, better outcomes. One command takes you from idea to running.
 
 **Creates:**
 - `.planning/PROJECT.md` — project context
-- `.planning/config.json` — workflow preferences
+- `.planning/config.json` — workflow preferences (includes PM mode + VK connection)
 - `.planning/research/` — domain research (optional)
 - `.planning/REQUIREMENTS.md` — scoped requirements
 - `.planning/ROADMAP.md` — phase structure
 - `.planning/STATE.md` — project memory
 
-**After this command:** Run `/cook:pm-start` for autonomous mode (recommended) or `/cook:plan-phase 1` for manual phase-by-phase control.
+**If autonomous mode:** Connects to Vibe Kanban and auto-launches `/cook:pm-start` at the end.
+**If manual mode:** User runs `/cook:plan-phase 1` or `/cook:pm-start` when ready.
 
 </objective>
 
@@ -237,10 +239,19 @@ EOF
 
 ## Phase 5: Workflow Preferences
 
-**Round 1 — Core workflow settings (4 questions):**
+**Round 1 — Core workflow settings (5 questions):**
 
 ```
 questions: [
+  {
+    header: "PM Mode",
+    question: "How should COOK run your project?",
+    multiSelect: false,
+    options: [
+      { label: "Autonomous (Recommended)", description: "PM plans, dispatches workers, monitors, reviews, advances phases — fully hands-off" },
+      { label: "Manual", description: "You trigger each step yourself (/cook:plan-phase, /cook:pm-cycle, etc.)" }
+    ]
+  },
   {
     header: "Mode",
     question: "How do you want to work?",
@@ -255,18 +266,18 @@ questions: [
     question: "How thorough should planning be?",
     multiSelect: false,
     options: [
-      { label: "Quick", description: "Ship fast (3-5 phases, 1-3 plans each)" },
-      { label: "Standard", description: "Balanced scope and speed (5-8 phases, 3-5 plans each)" },
-      { label: "Comprehensive", description: "Thorough coverage (8-12 phases, 5-10 plans each)" }
+      { label: "Quick", description: "Ship fast (3-5 phases, 1-3 tickets each)" },
+      { label: "Standard", description: "Balanced scope and speed (5-8 phases, 3-5 tickets each)" },
+      { label: "Comprehensive", description: "Thorough coverage (8-12 phases, 5-10 tickets each)" }
     ]
   },
   {
     header: "Execution",
-    question: "Run plans in parallel?",
+    question: "Run tickets in parallel?",
     multiSelect: false,
     options: [
-      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
-      { label: "Sequential", description: "One plan at a time" }
+      { label: "Parallel (Recommended)", description: "Independent tickets run simultaneously in separate worktrees" },
+      { label: "Sequential", description: "One ticket at a time" }
     ]
   },
   {
@@ -348,6 +359,16 @@ Create `.planning/config.json` with all settings:
     "research": true|false,
     "plan_check": true|false,
     "verifier": true|false
+  },
+  "pm": {
+    "mode": "autonomous|manual",
+    "poll_interval_seconds": 60,
+    "project_id": null,
+    "repos": [],
+    "default_executor": "CLAUDE_CODE",
+    "auto_replan_on_failure": true,
+    "auto_dispatch_next_wave": true,
+    "max_replan_attempts": 3
   }
 }
 ```
@@ -926,7 +947,26 @@ EOF
 )"
 ```
 
-## Phase 10: Done
+## Phase 10: Connect Vibe Kanban
+
+**If pm.mode is "autonomous"**, connect to Vibe Kanban now so pm-start can dispatch immediately:
+
+1. Call `mcp__vibe_kanban__list_projects()` — discover available projects
+2. If single project: use it. If multiple: pick the most relevant match by name.
+3. If no projects found: create one via `mcp__vibe_kanban__create_project(name)` using the project name from PROJECT.md.
+4. Call `mcp__vibe_kanban__list_repos(project_id)` — get repo details
+5. Save `project_id` and `repos` to `.planning/config.json` pm section:
+   ```json
+   "pm": {
+     ...
+     "project_id": "{discovered_or_created_id}",
+     "repos": [{"repo_id": "{repo_id}", "base_branch": "main"}]
+   }
+   ```
+
+**If pm.mode is "manual"**, skip VK connection (user will connect when they run `/cook:pm-start`).
+
+## Phase 11: Done
 
 Present completion with next steps:
 
@@ -944,24 +984,43 @@ Present completion with next steps:
 | Research       | `.planning/research/`       |
 | Requirements   | `.planning/REQUIREMENTS.md` |
 | Roadmap        | `.planning/ROADMAP.md`      |
+| Vibe Kanban    | {connected / not connected} |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
+```
 
+**If pm.mode is "autonomous":**
+
+Present and then immediately run `/cook:pm-start`:
+
+```
+───────────────────────────────────────────────────────────────
+
+## ▶ Launching Autonomous PM
+
+Phase 1: [Phase Name] — [Goal from ROADMAP.md]
+
+Starting /cook:pm-start — plans, dispatches, monitors, reviews.
+Press Ctrl+B to push to background. Stop with /cook:pm-stop.
+
+───────────────────────────────────────────────────────────────
+```
+
+Then invoke `/cook:pm-start` (which will detect NEEDS_PLANNING state and continue the lifecycle).
+
+**If pm.mode is "manual":**
+
+```
 ───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
-**Phase 1: [Phase Name]** — [Goal from ROADMAP.md]
+Phase 1: [Phase Name] — [Goal from ROADMAP.md]
 
-/cook:pm-start — autonomous mode (plans, dispatches, monitors, reviews — runs the entire project end-to-end)
+/cook:pm-start — switch to autonomous mode anytime
+/cook:plan-phase 1 — plan one phase at a time
 
 <sub>/clear first → fresh context window</sub>
-
----
-
-**Also available:**
-- /cook:plan-phase 1 — manual mode: plan one phase at a time
-- /cook:pm-start --manual — PM without the loop (you trigger each cycle)
 
 ───────────────────────────────────────────────────────────────
 ```
@@ -1002,7 +1061,9 @@ Present completion with next steps:
 - [ ] ROADMAP.md created with phases, requirement mappings, success criteria
 - [ ] STATE.md initialized
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] User knows next step is `/cook:pm-start` (autonomous) or `/cook:plan-phase 1` (manual)
+- [ ] Vibe Kanban connected (if autonomous mode)
+- [ ] If autonomous: `/cook:pm-start` launched automatically
+- [ ] If manual: user knows next step is `/cook:plan-phase 1`
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.
 

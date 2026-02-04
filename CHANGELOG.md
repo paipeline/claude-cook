@@ -6,6 +6,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.11.10] - 2026-02-04
+
+### Added
+- new-project asks autonomous vs manual PM mode upfront
+- Auto-connects to Vibe Kanban during new-project (autonomous mode)
+- Auto-launches `/cook:pm-start` after project init (autonomous mode)
+- PM config section included in config.json from the start
+
+### Changed
+- Renamed "plans" to "tickets" in user-facing depth/execution questions
+- config.json template now includes pm section with VK defaults
+
 ## [1.11.9] - 2026-02-04
 
 ### Changed

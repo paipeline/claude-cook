@@ -31,5 +31,15 @@
   "safety": {
     "always_confirm_destructive": true,
     "always_confirm_external_services": true
+  },
+  "pm": {
+    "mode": "autonomous",
+    "poll_interval_seconds": 60,
+    "project_id": null,
+    "repos": [],
+    "default_executor": "CLAUDE_CODE",
+    "auto_replan_on_failure": true,
+    "auto_dispatch_next_wave": true,
+    "max_replan_attempts": 3
   }
 }
