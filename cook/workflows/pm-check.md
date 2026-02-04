@@ -125,10 +125,20 @@ Run /cook:pm-start {X+1} to begin next phase.
 
 ### WAVE_COMPLETE
 1. Identify next wave tickets in TICKET-MAP
-2. Check `pm.auto_dispatch_next_wave` in config
-3. If true: dispatch all next-wave tickets (call dispatch flow from cook-pm agent)
-4. If false: log and present suggestion to user
-5. Update STATE.md wave summary
+2. **Merge completed wave branches before dispatching next wave:**
+   - For each `done` ticket in the completed wave, get its workspace/branch info via `mcp__vibe_kanban__get_task(task_id)`
+   - Merge each branch back to `base_branch` using `mcp__vibe_kanban__merge_workspace(workspace_id)` if available, otherwise use git CLI:
+     ```bash
+     git checkout {base_branch}
+     git merge --squash {feature_branch}
+     git commit -m "Merge wave {N} ticket: {title}"
+     ```
+   - If merge conflicts occur: log error, halt wave advancement, escalate to user
+   - This ensures wave N+1 workers see wave N's code in their worktrees
+3. Check `pm.auto_dispatch_next_wave` in config
+4. If true: dispatch all next-wave tickets (call dispatch flow from cook-pm agent)
+5. If false: log and present suggestion to user
+6. Update STATE.md wave summary
 
 ### WORKER_COMPLETED (inprogress → inreview)
 1. Call `get_task(task_id)` to read worker output/notes

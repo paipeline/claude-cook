@@ -163,7 +163,7 @@ Follow `pm-check.md` workflow:
 | Ticket: inprogress → inreview | Update TICKET-MAP, transition to NEEDS_REVIEW |
 | Ticket: inprogress → done | Update TICKET-MAP (review skipped), check wave completion |
 | Ticket: any → cancelled | If auto_replan: run pm-replan (TARGETED). Else: log warning |
-| Wave complete | If auto_dispatch_next_wave: dispatch next wave. Else: log |
+| Wave complete | Merge completed wave branches to base_branch, then dispatch next wave if auto_dispatch_next_wave. Else: log |
 | All tickets done | Mark as PHASE_COMPLETE (caught next cycle) |
 | No changes | Log: "No changes. {N} inprogress, {M} inreview, {O} todo." |
 
@@ -199,14 +199,23 @@ The PM does **not** run its own code reviewer. Instead, it delegates review to t
 
 ### PHASE_COMPLETE
 
-**Goal:** Advance to next phase in roadmap.
+**Goal:** Merge all phase branches and advance to next phase.
 
-1. Read ROADMAP.md
-2. Find next phase after current
-3. If next phase exists:
+1. **Merge all remaining phase branches to base_branch:**
+   - For each `done` ticket in the phase (from last wave), ensure its branch is merged
+   - Use `mcp__vibe_kanban__merge_workspace(workspace_id)` if available, otherwise git CLI:
+     ```bash
+     git checkout {base_branch}
+     git merge --squash {feature_branch}
+     git commit -m "Merge phase {X} ticket: {title}"
+     ```
+   - If merge conflicts: log error, escalate to user, do NOT advance phase
+2. Read ROADMAP.md
+3. Find next phase after current
+4. If next phase exists:
    - Update STATE.md: current_phase → next phase, status → "pending"
    - Log: "Phase {X} complete. Advancing to Phase {X+1}: {name}"
-4. If no next phase:
+5. If no next phase:
    - This is MILESTONE_COMPLETE
 
 ### MILESTONE_COMPLETE

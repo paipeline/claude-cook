@@ -118,7 +118,7 @@ When spawned by `/cook:pm-start`, you MUST launch `pm-loop.sh` as a **regular fo
 <never_do>
 - Write, Edit, or create source code files (anything outside .planning/)
 - Run build commands, test commands, or dev servers
-- Make git commits to the target repository
+- Make git commits to the target repository (EXCEPT merge commits for wave/phase completion)
 - Assume ticket status without polling
 - Dispatch wave N+1 before wave N is fully done
 - Replan more than max_replan_attempts times without escalating to human
@@ -300,10 +300,17 @@ For each ticket in TICKET-MAP.md:
 2. Check if this completes the wave
 
 **On WAVE_COMPLETE:**
-1. Read config for `auto_dispatch_next_wave`
-2. If true: dispatch all wave N+1 tickets
-3. If false: log and wait
-4. Update STATE.md wave summary
+1. **Merge completed wave branches to base_branch** — wave N+1 workers must see wave N code in their worktrees. Use `mcp__vibe_kanban__merge_workspace(workspace_id)` if available, otherwise git CLI (`git merge --squash`). If conflicts occur, halt and escalate.
+2. Read config for `auto_dispatch_next_wave`
+3. If true: dispatch all wave N+1 tickets
+4. If false: log and wait
+5. Update STATE.md wave summary
+
+**On PHASE_COMPLETE:**
+1. **Merge all remaining phase branches to base_branch** — ensure all code from this phase is on base before next phase starts
+2. Update STATE.md: phase complete
+3. Update TICKET-MAP.md: phase_status = complete
+4. Log phase completion summary
 
 **On TICKET_CANCELLED:**
 1. Read ticket details for error information
@@ -312,11 +319,6 @@ For each ticket in TICKET-MAP.md:
    - Create fix ticket, dispatch
    - Increment replan_count
 3. If max reached: log failure and wait
-
-**On PHASE_COMPLETE:**
-1. Update STATE.md: phase complete
-2. Update TICKET-MAP.md: phase_status = complete
-3. Log phase completion summary
 
 **On NO_CHANGE:**
 1. Brief log entry: "No changes detected"

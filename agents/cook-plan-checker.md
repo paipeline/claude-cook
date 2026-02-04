@@ -360,7 +360,41 @@ done
 
 **Cycle detection:** If A -> B -> C -> A, report cycle.
 
-## Step 7: Check Key Links Planned
+## Step 7: Validate Parallel File Isolation
+
+Same-wave plans run in parallel git worktrees. If two plans in the same wave modify the same file, they will conflict on merge.
+
+**Check:**
+
+For each wave, collect all `files_modified` from every plan in that wave:
+
+```
+wave_files = {}  # wave_number -> {plan_id: [files]}
+
+for each plan:
+  wave = plan.wave
+  files = plan.files_modified
+  wave_files[wave][plan.id] = files
+```
+
+For each wave with multiple plans, check for overlaps:
+
+```
+for each pair (plan_A, plan_B) in same wave:
+  overlap = plan_A.files ∩ plan_B.files
+  if overlap is not empty:
+    ERROR: "Plans {A} and {B} (wave {N}) both modify: {overlap}"
+    FIX: "Move one plan to a later wave, or merge into a single plan"
+```
+
+**Severity:** This is a **blocking** issue. Same-wave file overlap will cause merge conflicts when parallel workers complete.
+
+**Resolution options:**
+1. Move one plan to a later wave (add dependency)
+2. Merge the overlapping plans into one plan
+3. Split the shared file so each plan touches different files
+
+## Step 8: Check Key Links Planned
 
 Verify artifacts are wired together in task actions.
 
@@ -377,7 +411,7 @@ Missing: No mention of fetch/API call in action
 Issue: Key link not planned
 ```
 
-## Step 8: Assess Scope
+## Step 9: Assess Scope
 
 Evaluate scope against context budget.
 
@@ -395,7 +429,7 @@ grep "files_modified:" "$PHASE_DIR"/$PHASE-01-PLAN.md
 - 4 tasks/plan: Warning
 - 5+ tasks/plan: Blocker (split required)
 
-## Step 9: Verify must_haves Derivation
+## Step 10: Verify must_haves Derivation
 
 Check that must_haves are properly derived from phase goal.
 
@@ -414,7 +448,7 @@ Check that must_haves are properly derived from phase goal.
 - Specify the connection method (fetch, Prisma query, import)
 - Cover critical wiring (where stubs hide)
 
-## Step 10: Determine Overall Status
+## Step 11: Determine Overall Status
 
 Based on all dimension checks:
 
