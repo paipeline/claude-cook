@@ -23,7 +23,7 @@ This is the most leveraged moment in any project. Deep questioning here means be
 - `.planning/ROADMAP.md` — phase structure
 - `.planning/STATE.md` — project memory
 
-**After this command:** Run `/cook:plan-phase 1` to start execution.
+**After this command:** Run `/cook:pm-start` for autonomous mode (recommended) or `/cook:plan-phase 1` for manual phase-by-phase control.
 
 </objective>
 
@@ -953,14 +953,15 @@ Present completion with next steps:
 
 **Phase 1: [Phase Name]** — [Goal from ROADMAP.md]
 
-/cook:discuss-phase 1 — gather context and clarify approach
+/cook:pm-start — autonomous mode (plans, dispatches, monitors, reviews — runs the entire project end-to-end)
 
 <sub>/clear first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- /cook:plan-phase 1 — skip discussion, plan directly
+- /cook:plan-phase 1 — manual mode: plan one phase at a time
+- /cook:pm-start --manual — PM without the loop (you trigger each cycle)
 
 ───────────────────────────────────────────────────────────────
 ```
@@ -1001,7 +1002,7 @@ Present completion with next steps:
 - [ ] ROADMAP.md created with phases, requirement mappings, success criteria
 - [ ] STATE.md initialized
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] User knows next step is `/cook:discuss-phase 1`
+- [ ] User knows next step is `/cook:pm-start` (autonomous) or `/cook:plan-phase 1` (manual)
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.
 
