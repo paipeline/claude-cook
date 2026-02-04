@@ -18,7 +18,7 @@ This is the most leveraged moment in any project. Deep questioning here means be
 
 **Creates:**
 - `.planning/PROJECT.md` — project context
-- `.planning/config.json` — workflow preferences (includes PM mode + VK connection)
+- `.planning/config.json` — workflow preferences + PM config + VK connection
 - `.planning/research/` — domain research (optional)
 - `.planning/REQUIREMENTS.md` — scoped requirements
 - `.planning/ROADMAP.md` — phase structure
@@ -949,7 +949,7 @@ EOF
 
 ## Phase 10: Connect Vibe Kanban
 
-**If pm.mode is "autonomous"**, connect to Vibe Kanban now so pm-start can dispatch immediately:
+**Always connect to Vibe Kanban.** COOK assumes VK is available.
 
 1. Call `mcp__vibe_kanban__list_projects()` — discover available projects
 2. If single project: use it. If multiple: pick the most relevant match by name.
@@ -963,8 +963,6 @@ EOF
      "repos": [{"repo_id": "{repo_id}", "base_branch": "main"}]
    }
    ```
-
-**If pm.mode is "manual"**, skip VK connection (user will connect when they run `/cook:pm-start`).
 
 ## Phase 11: Done
 
@@ -984,7 +982,7 @@ Present completion with next steps:
 | Research       | `.planning/research/`       |
 | Requirements   | `.planning/REQUIREMENTS.md` |
 | Roadmap        | `.planning/ROADMAP.md`      |
-| Vibe Kanban    | {connected / not connected} |
+| Vibe Kanban    | Connected ({project_name})  |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
 ```
@@ -1061,7 +1059,7 @@ Phase 1: [Phase Name] — [Goal from ROADMAP.md]
 - [ ] ROADMAP.md created with phases, requirement mappings, success criteria
 - [ ] STATE.md initialized
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] Vibe Kanban connected (if autonomous mode)
+- [ ] Vibe Kanban connected (project_id + repos saved to config.json)
 - [ ] If autonomous: `/cook:pm-start` launched automatically
 - [ ] If manual: user knows next step is `/cook:plan-phase 1`
 

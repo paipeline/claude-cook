@@ -6,6 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.11.11] - 2026-02-04
+
+### Changed
+- VK connection is now unconditional during new-project (always assumes VK is available)
+
 ## [1.11.10] - 2026-02-04
 
 ### Added
